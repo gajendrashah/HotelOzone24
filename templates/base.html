@@ -46,16 +46,16 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Hotel Ozone</h3>
+                <a href="{% url "dashboard" %}" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Ozone 24</h3>
                 </a>
         
                 <div class="navbar-nav w-100">
-                    <a href="{% url "dashboard" %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Room Manager</a>
-                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Reservation</a>
-                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Check In</a>
-                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Check Out</a>
+                    <a href="{% url "dashboard" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'dashboard' %} active {% endif %}"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="{% url "roommanager" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'roommanager' %} active {% endif %}"><i class="fa fa-th me-2"></i>Room Manager</a>
+                    <a href="{% url "reserveroom" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'reserveroom' %} active {% endif %}"><i class="fa fa-th me-2"></i>Reservation</a>
+                    <a href="{% url "checkin" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'checkin' %} active {% endif %}"><i class="fa fa-th me-2"></i>Check In</a>
+                    <a href="{% url "checkout" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'checkout' %} active {% endif %}"><i class="fa fa-th me-2"></i>Check Out</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Resturent</a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -64,11 +64,11 @@
                         </div>
                     </div>
                     
-                    <a href="{% url "reserveroom" %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Customer Report</a>
+                    <a href="{% url "report" %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'report' %} active {% endif %}"><i class="fa fa-table me-2"></i>Customer Report</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Setting</a>
+                        <a href="#" class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'addroom' %} active {% endif %}" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Setting</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Add Room</a>
+                            <a href="{% url "addroom" %}" class="dropdown-item {% if request.resolver_match.url_name == 'addroom' %} active {% endif %}">Add Room</a>
                             <a href="signup.html" class="dropdown-item">Add User</a>                            
                         </div>
                     </div>
