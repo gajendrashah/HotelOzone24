@@ -41,7 +41,7 @@ def user_login(request):
             else:
                 messages.info(request, 'Username OR password is incorrect')
 
-    return render(request,"pages/signin.html")
+    return render(request,"extra pages/signin.html")
 
 
 def user_signup(request):
@@ -72,7 +72,7 @@ def user_signup(request):
                 return redirect('signup')
         
 
-    return render(request,"pages/signup.html")
+    return render(request,"extra pages/signup.html")
 
 
 def user_logout(request):
