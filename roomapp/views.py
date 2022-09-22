@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm  
 from django.contrib.auth.models import User , auth
+from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
-# @login_required("signup")
+@login_required(login_url="signin")
 def dashboard(request):
     return render(request, 'index.html')
 
