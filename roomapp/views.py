@@ -10,20 +10,27 @@ from django.contrib.auth.decorators import login_required, permission_required
 def dashboard(request):
     return render(request, 'index.html')
 
+@login_required(login_url="signin")
 def checkin(request):
     return render(request, 'checkin.html')
 
+@login_required(login_url="signin")
 def checkout(request):
     return render(request, 'checkout.html')
 
+@login_required(login_url="signin")
 def addroom(request):
     return render(request, 'addroom.html')
 
+@login_required(login_url="signin")
 def reserveroom(request):
     return render(request, 'reserve_room.html')
 
+
+@login_required(login_url="signin")
 def roommanager(request):
     return render(request, 'room_manager.html')
+
 
 
 def user_login(request):
