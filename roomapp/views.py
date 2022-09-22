@@ -11,19 +11,23 @@ def dashboard(request):
     return render(request, 'index.html')
 
 def checkin(request):
-    return render(request, 'checkin.html')
+    return render(request, 'roomapp/checkin.html')
 
 def checkout(request):
-    return render(request, 'checkout.html')
+    return render(request, 'roomapp/checkout.html')
 
 def addroom(request):
-    return render(request, 'addroom.html')
+    return render(request, 'roomapp/addroom.html')
 
 def reserveroom(request):
-    return render(request, 'reserve_room.html')
+    return render(request, 'roomapp/reserve_room.html')
 
 def roommanager(request):
-    return render(request, 'room_manager.html')
+
+    return render(request, 'roomapp/room_manager.html')
+
+def customerdetail(request):
+    return render(request, 'roomapp/room_manager.html')
 
 
 def user_login(request):
@@ -78,4 +82,3 @@ def user_signup(request):
 def user_logout(request):
     auth.logout(request)
     return redirect('signin')
-    
