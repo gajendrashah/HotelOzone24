@@ -72,7 +72,17 @@ class CustomerCretionForm(forms.ModelForm):
         }
 
 
-
+class Advance_paymentForm(forms.Form):
+    Payment_type = (
+        ("Esewa", "Eswa"),
+        ("Khalti", "Khalti"),
+        ("Bank Transfer", "Bank Transfer"),
+        ("Cash", "Cash"),
+        ("Other", "Other"),
+        )
+    Advance_amount =forms.IntegerField( required=True,widget=forms.NumberInput(attrs={"class":"form-control form-white"}))
+    payment_type =forms.ChoiceField(choices=Payment_type, required=True,widget=forms.Select(attrs={"class":"form-control form-white"}))
+    remarks =forms.CharField(max_length=255, required=True,widget=forms.TextInput(attrs={"class":"form-control form-white"}))
 
 class BookedAccountupdateForm(forms.ModelForm):
     class Meta:
@@ -107,4 +117,53 @@ class CustomerCretionForm1(forms.ModelForm):
         "main_additional_id" : forms.ClearableFileInput(attrs={"class":"form-control input-group-prepend",'multiple': True}),
         
  
+        }
+
+
+
+class OrderCreationForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'
+        exclude =["id","customer","order_status"]
+        
+        widgets ={
+            "order_id" : forms.TextInput(attrs={"class":"form-control"}),
+            "customer" : forms.Select(attrs={"class":"form-control"}),
+           
+            "total" : forms.NumberInput(attrs={"class":"form-control"}),
+            "order_status" : forms.Select(attrs={"class":"form-control"}),
+            "payment_type" : forms.Select(attrs={"class":"form-control"}),
+        }
+
+class Order_creation_Non_room_user(forms.ModelForm):
+    class Meta:
+        model = Non_room_user
+        fields = "__all__"
+        widgets ={
+        "full_name" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "order_id" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "phone_number" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "email" : forms.EmailInput(attrs={"class":"form-control mt-2"}),
+        "total" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "payment_type" : forms.Select(attrs={"class":"form-control mt-2"}),
+        
+ 
+        }
+
+class Non_room_OrderCreationForm(forms.ModelForm):
+    class Meta:
+        model = Non_room_user
+        fields = '__all__'
+        exclude =["id","customer","order_status"]
+        
+        widgets ={
+            "order_id" : forms.TextInput(attrs={"class":"form-control"}),
+            "phone_number" : forms.TextInput(attrs={"class":"form-control"}),
+            "email" : forms.EmailInput(attrs={"class":"form-control"}),
+            "full_name" : forms.TextInput(attrs={"class":"form-control"}),
+            
+            "total" : forms.NumberInput(attrs={"class":"form-control"}),
+            "order_status" : forms.Select(attrs={"class":"form-control"}),
+            "payment_type" : forms.Select(attrs={"class":"form-control"}),
         }

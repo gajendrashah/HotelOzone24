@@ -17,9 +17,21 @@ urlpatterns = [
     path('signin/', views.user_login, name='signin'),  
     path('signup/', views.user_signup, name='signup'),  
     path('logout/', views.user_logout, name='logout'),  
-    path('with_room/', views.with_room, name='withroom'),  
+    path('with_room/', views.with_room, name='withroom'),
+    
+    path("withroom_update/<int:pk>/",views.order_update,name="withroom_update"),
+    path("withroom_delete/<int:pk>/",views.order_delete,name="withroom_delete"),
+
+
     path('resturant/with_out_room/', views.with_out_room, name='withoutroom'),
+    path('resturant/with_out_room_update/<int:pk>/', views.with_out_room_update, name='withoutroom_update'),
+    path('resturant/with_out_room_update/<int:pk>/', views.with_out_room_delete, name='withoutroom_delete'),
+
+
+
     path("get_room_by_group/",views.get_room_by_group,name="get_room_by_group"),
+    path("check_out_process/",views.check_out_process,name="check_out_process"),
+    path("check_out/",views.check_out,name="check_out"),
 
 
    
