@@ -2,19 +2,29 @@
 {% block content %}  
 
 
-<!-- Button trigger modal -->
-
   
   <!-- Modal -->
-  <div class="modal fade" id="EditRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Edit Room</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-     
-        {% include "roomapp/reserve_room_edit.html" %}
+        <div class="modal-body">
+          <div class="mb-3 form-check">
+            <form action="" method="POST">
+                {% csrf_token %}
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" checked="checked">
+            <label class="form-check-label" for="exampleCheck1">Click To Procced Check In</label>
+            </form>
+        </div>
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button"  id="save_ch" class="btn btn-primary">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
@@ -109,7 +119,7 @@
         </div>
       
         <div class="row">
-            <button type="submit" class="btn btn-warning rounded-pill m-2">Save</button>
+            <button type="submit"  class="btn btn-warning rounded-pill m-2">Save</button>
         </div>
     </form>
     </div>
@@ -164,11 +174,12 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                               
-                                <a  href ="{% url "reservation_edit" customer.id%}" type="button" class="btn btn-primary">Checkin</a>
-                                <a type="button" href="" class="btn btn-sm btn-warning mx-1"
+                                <button type="button" onclick="checkIn_pro({{customer.id }})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                   Checkin
+                                  </button>
+                                <a type="button" href="{% url "reservation_cancle" customer.id %}" class="btn btn-sm btn-warning mx-1"
                                     style="float: none;">Cancle</a>
-                                    <a type="button" href="" class="btn btn-sm btn-info mx-1"
-                                    style="float: none;">Edit</a>
+                                    <a  href ="{% url "reservation_edit" customer.id%}" type="button" class="btn btn-primary">Edit</a>
                                     {% comment %} <button type="button" class="btn btn-sm btn-success saveBtn"
                                     style="float: none; display: none;">Save</button>
                                 <button type="button" class="btn btn-sm btn-danger confirmBtn"
@@ -192,6 +203,55 @@
 {% block scripts %}
 
 <script>
+    $('input[type="checkbox"]').click(function () {
+        if ($(this).prop("checked") == true) {
+            $(this).val("true")
+            
+          
+        }
+        else if ($(this).prop("checked") == false) {
+            $(this).val("false")
+           
+        }
+    });
+        function checkIn_pro(a){
+            var a_ = a
+            console.log(a)
+
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            $("#save_ch").click(function(){
+
+                console.log("here i am")
+
+                if($("input[type='checkbox']").prop("checked") == true){
+
+                    $.ajax({
+
+                        url: "{% url 'reservation_checkin' %}",
+                        data:{"bookd_id":a, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        method: "POST",
+                       
+                        datatype: "json",
+                        success:function(resp){
+                            console.log(resp)
+                        }
+
+
+                    });
+
+                    
+                }
+                else{
+                alert("Go Back")
+            }
+
+            })
+        
+          
+
+       
+    };
+ 
 
 
 

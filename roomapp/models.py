@@ -107,3 +107,112 @@ class Booked(models.Model):
                 total_days += 1
             dt += oneday
         return total_days
+
+
+
+
+
+
+class Advance_payment(models.Model):
+    Payment_mode = (
+        ("Esewa", "Eswa"),
+        ("Khalti", "Khalti"),
+        ("Bank Transfer", "Bank Transfer"),
+        ("Cash", "Cash"),
+        ("Other", "Other"),
+    )
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    Advance_amount = models.CharField(max_length=255, blank=True)
+    payment_day = models.DateTimeField(auto_now_add=True)
+    payment_mode = models.CharField(
+        max_length=255, choices=Payment_mode, default="available")
+    remarks = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.remarks
+
+
+class Customer_list(models.Model):
+    title = models.CharField(max_length=255, null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    # advance = models.ManyToManyField(Advance_payment,blank=True,null=True)
+    checkout = models.CharField(max_length=255, default="stay")
+    bookd_roooms = models.ForeignKey(
+        Booked, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return self.customer.full_name
+
+    @property
+    def total_amount(self):
+        total_amt = 0.0
+        data = Advance_payment.objects.filter(customer=self.customer.id)
+        # print("this is data:",data)
+        for d in data:
+            total_amt += float(d.Advance_amount)
+        if total_amt == 0.0:
+            a = 0
+        else:
+            a = total_amt
+        return a
+
+    @property
+    def total_resturent_amount(self):
+        res_total = 0.0
+        query = Order.objects.filter(
+            customer=self.customer, payment_type="UNPAID").all()
+        for q in query:
+            res_total += float(q.total)
+
+        return res_total
+
+    @property
+    def room_cost(self):
+        res_total = 0.0
+        query = self.bookd_roooms.room_id.all()
+
+        for q in query:
+            res_total += float(q.price_pernight)
+
+        return res_total
+
+    @property
+    def all_rooms(self):
+        a = self.bookd_roooms.room_id.all()
+        return a
+
+
+class Ch_out(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    remaing_balance = models.FloatField(default=0,null=True)
+    # resturent_bill = models.FloatField()
+    room_bill = models.FloatField(default=0,null=True)
+    # bar_bill = models.ForeignKey(Bar_items,on_delete=models.CASCADE)
+    resturent_discount = models.FloatField(blank=True)
+    # bar_discount = models.FloatField
+    vat = models.BooleanField(default=False)
+    room_discount = models.FloatField(blank=True)
+    remarks = models.CharField(max_length=255 ,blank=True)
+
+    def __str__(self) -> str:
+        return self.customer.full_name
+
+    @property
+    def rem_bln(self):
+        rem = self.remaing_balance
+        if rem is None:
+            rem =0
+        else:
+            rem = self.remaing_balance
+        return rem
+     
+    
+
+    @property
+    def resturent_dic(self):
+        return self.resturent_discount
+
+    @property
+    def room_dic(self):
+        return self.room_discount

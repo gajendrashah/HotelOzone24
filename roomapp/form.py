@@ -37,9 +37,3 @@ class ReservationCreationForm(forms.ModelForm):
  
         }
 
-class BookingUpdateForm(forms.ModelForm):
-    
-    class Meta:
-        model = Booked
-        fields = "__all__"
-        # exclude = ["customer_details","room_id","child","male_number","female_number","other_gender"]
