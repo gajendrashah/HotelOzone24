@@ -1,5 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}  
+
+
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="EditRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Edit Room</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+     
+        {% include "roomapp/reserve_room_edit.html" %}
+      </div>
+    </div>
+  </div>
+  
+
+
 <!-- Sale & Revenue Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
@@ -47,147 +68,50 @@
     <div class="bg-secondary rounded h-100 p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Room Reservation Form</h6>
-            <button type="button" class="btn btn-warning rounded-pill m-2">Clear</button>
         </div>
 
         <div class="row">
+            
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="floatingInput"
                     placeholder="Ram Shah">
                 <label for="floatingInput">  &nbsp;&nbsp; Search</label>
             </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                        placeholder="Ram Shah">
-                    <label for="floatingInput">Full Name</label>
-                </div>
+           
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        <div class="row">
+            {% if form.errors %}
+            {% for field in form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
             </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                        placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
-                </div>
-            </div>
-        </div>
+            {% endfor %}
+            {% endfor %}
         
-        <div class="row">
-            <div class="col">
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+            {% endfor %}
+        
+            {% endif %}
+            {% for fields in form%}
+            <div class="col-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="9800000000">
-                    <label for="floatingPassword">Phone Number</label>
+                    {{fields.label}}
+                    {{fields}}
+                    
                 </div>
             </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Butwal">
-                    <label for="floatingPassword">Address </label>
-                </div>
-            </div>
+            {% endfor %}
         </div>
+      
         <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Nationality </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">ID Number  </label>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-warning rounded-pill m-2">Save</button>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Booked By </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Booking Date  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">ID Upload  </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">No of Person  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Male </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Female  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Child </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Other Gender </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">No of Days</label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">ajsdfh</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <button type="button" class="btn btn-warning rounded-pill m-2">Save</button>
-            <button type="button" class="btn btn-primary rounded-pill m-2">Preview</button>
-        </div>
+    </form>
     </div>
 </div>
 
@@ -203,32 +127,78 @@
         <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
-                    <tr class="text-white">
-                        <th scope="col">Name </th>
-                        <th scope="col">Check in Date </th>                        
-                        <th scope="col">Number of Person</th>
-                        <th scope="col">Email </th>
-                        <th scope="col">Phone Number </th>
-                        <th scope="col">Booked By</th>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Checkin Date </th>
+                        <th scope="col">Number of Days</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody id="userData">
+                    {% csrf_token %}
+                    {% for customer in customers %}
+                    <tr id="{{customer.customer_details.id}}">
+                        <td class="customerid" value="{{customer.customer_details.id}}">
+                            {{ forloop.counter}}</td>
+
+                        <td>
+                            <span class="editSpan user ">{{customer.customer_details.full_name}}</span>
+                            <input class="editInput form-control" type="text" name="user"
+                                value="{{customer.customer_details.full_name}}" style="display:none;border:none; padding:unset;color:" >
+                        </td>
+
+                        <td>{{customer.customer_details.email}}</td>
+                        <td>{{customer.customer_details.phone_number }}</td>
+
+                        <td>{{customer.customer_details.check_in}}</td>
                         
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>   
-                        <td><a class="btn btn-sm btn-warning m-2" href="">Change </a><a class="btn btn-sm btn-primary " href=""> Status</a></td>
+                        <td>{{customer.number_of_days}}</td>
+
+                        <td>{{customer.status}}</td>
+                      
+                        
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                              
+                                <a  href ="{% url "reservation_edit" customer.id%}" type="button" class="btn btn-primary">Checkin</a>
+                                <a type="button" href="" class="btn btn-sm btn-warning mx-1"
+                                    style="float: none;">Cancle</a>
+                                    <a type="button" href="" class="btn btn-sm btn-info mx-1"
+                                    style="float: none;">Edit</a>
+                                    {% comment %} <button type="button" class="btn btn-sm btn-success saveBtn"
+                                    style="float: none; display: none;">Save</button>
+                                <button type="button" class="btn btn-sm btn-danger confirmBtn"
+                                    style="float: none; display: none;">Confirm</button> {% endcomment %}
+                            </div>
+                            
+                        </td>
+
                     </tr>
-                   
+                    {% endfor %}
+
+
+
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<!-- Recent Sales End -->
+
+{% block scripts %}
+
+<script>
+
+
+
+
+</script>
+
+{% endblock scripts %}
+
+
 {% endblock %} 

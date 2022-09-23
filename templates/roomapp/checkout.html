@@ -1,1 +1,71 @@
 {% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Room Status Managemenet </h6>
+            <form class="d-none d-md-flex ms-4">
+                <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr role="row">
+                        <th>Customer Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Restaurant Bills</th>
+                        <th>Rooms</th>
+                        <th>Check In </th>
+
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cus in customer_list %}
+                    <tr class="odd" role="row">
+                        <td class="sorting_1" id="user_id">{{cus.customer.full_name}}</td>
+
+                        <td>{{cus.customer.phone_number}}</td>
+
+                        <td>
+
+
+                            {{cus.total_resturent_amount}}
+
+                        </td>
+
+                        <td> {% for r in cus.bookd_roooms.room_id.all %}
+
+                            <span
+                                class="badge badge-xs badge-success">{{r.room_number|upper}}</span>
+                            {% endfor %}
+                        </td>
+
+
+                        <td>{{cus.customer.check_in|date:"Y-m-d h : m A "}}</td>
+
+
+
+                        <td><span>
+                                
+                                <button type="button" class="btn btn-primary" id="summery"
+                                    onclick="ad_summery({{cus.customer.id}})" data-toggle="modal"
+                                    data-target=".bd-example-modal-lg">Summery  <span
+                                        class="btn-icon-start"><i class="fas fa-clipboard"></i></span>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
