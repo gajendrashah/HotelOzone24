@@ -245,3 +245,20 @@ class Order(models.Model):
     @property
     def order_user(self):
         return f'{self.customer.full_name}'
+
+
+
+class Non_room_user(models.Model):
+    PAYMENTTYPE = (('PAID', 'PAID'), ('UNPAID', 'UNPAID'))
+    order_id = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=True)
+    full_name = models.CharField(max_length=255,)
+    phone_number = models.IntegerField()
+    email = models.EmailField()
+    total = models.FloatField(max_length=255, null=True ,blank=True)
+    payment_type = models.CharField(max_length=255,choices=PAYMENTTYPE,null=True,default="UNPAID")
+    order_date = models.DateTimeField(auto_now_add=True,auto_now=False)
+    
+
+
+    def __str__(self):
+        return f'{self.order_id } {self.full_name }'

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.http import Http404,JsonResponse
-from roomapp.form import BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, ReservationCreationForm, RoomCreationForm
-from roomapp.models import Additional_id, Booked, Customer, Customer_list, Grouped_room, Room
+from roomapp.form import Advance_paymentForm, BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, Non_room_OrderCreationForm, Order_creation_Non_room_user, OrderCreationForm, ReservationCreationForm, RoomCreationForm
+from roomapp.models import Additional_id, Advance_payment, Booked, Ch_out, Customer, Customer_list, Grouped_room, Non_room_user, Order, Room
 
 # Create your views here.
 @login_required(login_url="signin")
@@ -105,8 +105,116 @@ def checkin_edit(request,pk):
 
 @login_required(login_url="signin")
 def checkout(request):
+    customer_list = Customer_list.objects.filter(status=True)
+   
+   
+    
+    form = Advance_paymentForm()
+    if request.method == "POST":
+                
+        user_id = request.POST.get("user")
+        ammount = request.POST.get("ammount", None)
+        paytype = request.POST.get("paytype")
+        remarks = request.POST.get("remarks")
+        # print(type(ammount),paytype,user_id)
+        if user_id != "" and ammount != "" and paytype != "": 
 
-    return render(request, 'roomapp/checkout.html')
+            user = Customer.objects.get(id=user_id)
+            obj = Advance_payment.objects.create(customer=user,Advance_amount=ammount,payment_mode=paytype,remarks=remarks)
+            obj.save()
+        
+       
+            return JsonResponse({"message":"success"},safe=False)
+        else:
+            return JsonResponse({"message":"Please fill all values"},safe=False)
+    
+    
+    if is_ajax(request=request):
+        term = request.GET.get("room")
+        group = Grouped_room.objects.get(title=term)
+        room = Room.objects.filter(status="available",group=group).values()
+        
+        return JsonResponse(list(room),safe=False)
+
+    context = {"customer_list":customer_list,"form":form}
+
+
+    return render(request, 'roomapp/checkout.html',context)
+
+def check_out(request):
+    if request.method == "POST":
+        print(request.POST)
+        pk = request.POST.get("user")
+        if pk != "":
+            user = Customer.objects.get(id=pk)
+            rooms = Customer_list.objects.filter(customer=user).last()
+            room_cost = rooms.room_cost
+            res_cost = rooms.total_resturent_amount
+            advance_amt = rooms.total_amount
+            remaing_balance = Ch_out.objects.filter(customer=user).last()
+            if remaing_balance is not None:
+                rem_blc = remaing_balance.rem_bln
+                print(rem_blc)
+                room_discount = remaing_balance.room_dic
+                resturet_discount = remaing_balance.resturent_dic
+            else:
+                rem_blc = 0
+                room_discount = 0
+                resturet_discount = 0
+                
+            # print("here i am",res_cost)
+            context={"username":user.full_name,"room_cost":room_cost,
+            "res_cost":res_cost,"advance_amt":advance_amt,"remaing_balance":rem_blc,
+            "room_discount":room_discount,
+            "resturet_discount":resturet_discount
+            
+            }
+            return JsonResponse(context,safe=False)
+
+def check_out_process(request):
+    if request.method != "POST":
+        raise Http404
+    
+    user_id = request.POST.get("user")
+    room_discount = request.POST.get("room_discount")
+    resturent_discount = request.POST.get("resturent_discount")
+    vat = request.POST.get("vat")
+    remarks = request.POST.get("remarks")
+    remaing_amt = request.POST.get("remaing_amt")
+
+    if user_id != "" and room_discount != "" and room_discount !="" and vat != "" and remaing_amt != "":
+    
+        cus = Customer.objects.get(id = user_id)
+        # user = Customer_list.objects.filter(customer=cus,status=True)
+        obj = Ch_out.objects.create(customer=cus,remaing_balance=abs(float(remaing_amt)),
+        resturent_discount=resturent_discount,room_discount=room_discount,vat=bool(vat),
+        remarks=remarks
+
+        )
+        obj.save()
+        ad = Advance_payment.objects.filter(customer=cus).first()
+        print(ad)
+        if ad is not None:
+            ad.Advance_amount = 0
+            ad.save()
+        else:
+            pass
+        deactive = Customer_list.objects.filter(customer=cus,status=True).first()
+        rooms = deactive.all_rooms
+        for room in rooms:
+            room.status = "cleaning"
+            room.save()
+        deactive.status=False
+        deactive.save()
+        cus.check_out = date.today()
+        cus.save()
+        
+
+        return JsonResponse({"msg":"User Check Out sucessfully "},safe=False)
+    else:
+        JsonResponse({"msg":"Please Make sure the data will be filled correctly"},safe=False)
+
+
 
 @login_required(login_url="signin")
 def addroom(request):
@@ -235,10 +343,8 @@ def reservation_checkin(request):
         raise Http404
     
     else:
-        print(request.POST)
         booke_id = request.POST.get("bookd_id")
         books_= Booked.objects.get(id=booke_id)
-        print(books_)
         books_.status = True
         cus= cus = Customer_list.objects.create(bookd_roooms=books_,customer=books_.customer_details)
         cus.status=True
@@ -270,11 +376,87 @@ def customerdetail(request):
     return render(request, 'roomapp/room_manager.html')
 
 def with_room(request):
-    return render(request,"resturentapp/withroom.html")
+    order = Order.objects.all().order_by("-order_date")
+    form = OrderCreationForm
+    
+    
+    if request.method == "POST":
+        if request.POST.get("room") != None:
+            form = OrderCreationForm(request.POST) 
+            if form.is_valid():
+                form.save()
+                messages.success(request,"Order Create successfully")
+                return redirect("withroom")
+            else:
+                 messages.error(request,"Order order cant create !!")
+                 return redirect("withroom")
+        
 
+    context ={"form":form,"order":order}
+
+
+    return render(request,"resturentapp/withroom.html",context)
+def order_update(request,pk):
+    order = get_object_or_404(Order,id=pk)
+    form = OrderCreationForm(instance=order)
+    if request.method == 'POST':
+        form = OrderCreationForm(request.POST,instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Order update successfully" )
+            return redirect('order')
+        else:        
+            messages.error(request, "Order Cant made" )
+            return redirect('order_update',pk=pk)
+
+
+   
+    context = {'form':form}
+    return render (request,"order_update.html",context)
+
+def order_delete(request,pk):
+    customer = get_object_or_404(Order,id=pk)
+    customer.delete()
+    messages.success(request, "Customer Delete successfully" )
+    return redirect('order')
 
 def with_out_room(request):
-    return render (request,"resturentapp/withoutroom.html")
+    form = Order_creation_Non_room_user
+    non_room = Non_room_user.objects.all().order_by("-order_date")
+    if request.method == "POST":
+        
+        form = Order_creation_Non_room_user(request.POST) 
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Order Create successfully")
+            return redirect("withoutroom")
+        else:
+            messages.error(request,"Order order cant create !!")
+            return redirect("withoutroom")
+
+    context ={"form":form,"non_room_user":non_room}
+    return render (request,"resturentapp/withoutroom.html",context)
+
+def with_out_room_update(request,pk):
+    order = get_object_or_404(Non_room_user,id=pk)
+    form = Non_room_OrderCreationForm(instance=order)
+    if request.method == 'POST':
+        form = Non_room_OrderCreationForm(request.POST,instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"order Updated !!!")
+            return redirect('without_room')
+        else:
+            messages.error(request,"order  Cant Updated !!!")
+            return redirect('without_room')
+    context = {'form':form}
+
+def with_out_room_delete(request,pk):
+    customer = get_object_or_404(Non_room_user,id=pk)
+    customer.delete()
+    messages.success(request, "Customer Delete successfully" )
+    return redirect('without_room')
+
 
 def user_login(request):
     if request.user.is_authenticated:

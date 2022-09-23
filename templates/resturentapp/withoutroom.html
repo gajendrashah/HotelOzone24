@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-12 mt-4 order1">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} "><strong>Warning!</strong> {{ message }}.</div>
+   {% endfor %}
+    {% endif %}
+    {% if form.errors %}
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endfor %}
+
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="form-row">
+            {% for field in form %}
+            <div class="form-group col-md-6">
+                {{field.label}} :
+                {{field}}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Create Order</button>
+        </div>
+
+
+    </form>
+
+</div>
+<div class="row order1">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pb-0">
+                <h4 class="card-title">Room Customer</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div id="employees_wrapper" class="dataTables_wrapper">
+
+
+                        <table id="customer" class="display dataTable" style="min-width: 845px" role="grid"
+                            aria-describedby="employees_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>Total</th>
+                                    <th>Order Status</th>
+                                    <th>Order Date</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cus in non_room_user %}
+
+                                <tr class="odd" role="row">
+                                    <td class="sorting_1" id="user_id">{{cus.order_id}}</td>
+                                    <td>{{cus.full_name}}</td>
+                                    <td>{{cus.phone_number}}</td>
+                                    <td>{{cus.email}}</td>
+                                    <td>{{cus.total}}</td>
+                                    {% if cus.payment_type == "UNPAID"%}
+                                    <td><span class='badge badge-xs badge-warning'>{{cus.payment_type}}</span></td>
+                                    {% endif %}
+                                    {% if cus.payment_type == "PAID"%}
+                                    <td><span class='badge badge-xs badge-primary'>{{cus.payment_type}}</span></td>
+                                    {% endif %}
+                                  
+                                    <td>{{cus.payment_type}}</td>
+                                    <td>{{cus.order_date}}</td>
+
+
+
+                                    <td><span>
+                                            <a href="{% url 'withoutroom_update' cus.id %}"
+                                                class="mr-4 update_customer"><i
+                                                    class="fa fa-pencil color-muted"></i> </a>
+                                            <a href="{% url 'withoutroom_delete' cus.id %}" data-toggle="tooltip"
+                                                data-placement="top" title=""
+                                                data-original-title="Delete {{cus.user}}"><i
+                                                    class="fa fa-close color-danger"></i></a></span>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
