@@ -1,14 +1,12 @@
-import datetime
-from django.http import JsonResponse,Http404
+import json
 from django.shortcuts import render,redirect,get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm  
 from django.contrib.auth.models import User , auth
-from django.contrib.auth.decorators import login_required, permission_required
-
-from roomapp.form import BookingUpdateForm, ReservationCreationForm, RoomCreationForm
-from roomapp.models import Booked, Customer, Grouped_room, Room
+from django.contrib.auth.decorators import login_required
+from django.http import Http404,JsonResponse
+from roomapp.form import ReservationCreationForm, RoomCreationForm
+from roomapp.models import Booked, Customer, Customer_list, Grouped_room, Room
 
 # Create your views here.
 @login_required(login_url="signin")
@@ -126,7 +124,6 @@ def reservation_edit(request,pk):
             Bks.number_of_days = number_of_days
             
             
-            
             res = [eval(i)for i in room_id]
             Bks.room_id.set(res)
             Bks.save()
@@ -146,6 +143,37 @@ def reservation_edit(request,pk):
     context={"form":form}
     return render(request,"roomapp/reserve_room_edit.html",context)
  
+
+def reservation_checkin(request):
+    if request.method != "POST":
+        raise Http404
+    
+    else:
+        print(request.POST)
+        booke_id = request.POST.get("bookd_id")
+        books_= Booked.objects.get(id=booke_id)
+        print(books_)
+        books_.status = True
+        cus= cus = Customer_list.objects.create(bookd_roooms=books_,customer=books_.customer_details)
+        cus.status=True
+        for r in books_.room_id.all():
+            r.status = "booked"
+            r.save()
+        cus.save()
+        books_.save()
+
+        return JsonResponse({"msg":"This is working "},safe=False)
+
+def reservation_cancle(request,pk):
+    booked = get_object_or_404(Booked,id=pk)
+    for r in booked.room_id.all():
+        r.status = "available"
+        r.save()
+        booked.delete()
+        messages.success(request,"Booking cancle sucssfully !!!")
+    return redirect("reserveroom")
+
+
 
 @login_required(login_url="signin")
 def roommanager(request):
