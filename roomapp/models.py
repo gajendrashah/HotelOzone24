@@ -45,7 +45,10 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.full_name
-
+class Additional_id(models.Model):
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    add_id = models.ImageField(upload_to="customer/add_id",null=True,blank=True)
+    
 class Grouped_room(models.Model):
     title = models.CharField(max_length=255,unique=True)
 
@@ -216,3 +219,29 @@ class Ch_out(models.Model):
     @property
     def room_dic(self):
         return self.room_discount
+
+
+
+
+class Order(models.Model):
+    PAYMENTTYPE = (('PAID', 'PAID'), ('UNPAID', 'UNPAID'))
+    PRODUCTDELIVARY = (('NEW', 'NEW'), ('APPROVED', 'APPROVED'),('CANCLE','CANCLE'),('DISPATCHED','DISPATCHED'),('RECIVED','RECIVED'),('Delivered','Delivered'))
+    order_id = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True,null=True)
+    room = models.ForeignKey(Room,on_delete=models.CASCADE,blank=True,null=True)
+    # kitchen_item = models.ManyToManyField(Resturent_items,blank=True)
+    # bar_items = models.ManyToManyField(Bar_items,blank=True)
+    # qty = models.FloatField(max_length=255, null=True)
+    total = models.CharField(max_length=255, null=True ,blank=True)
+    order_status = models.CharField(max_length=255,choices=PRODUCTDELIVARY,null=True,default="NEW")
+    payment_type = models.CharField(max_length=255,choices=PAYMENTTYPE,null=True,default="UNPAID")
+    order_date= models.DateTimeField(auto_now_add=True,auto_now=False,null=True)
+
+    def __str__(self):
+        return f'{self.order_id} {self.room.room_number}'
+
+
+    
+    @property
+    def order_user(self):
+        return f'{self.customer.full_name}'

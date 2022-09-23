@@ -46,8 +46,8 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary rounded h-100 p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Room Reservation Form</h6>
-            <button type="button" class="btn btn-warning rounded-pill m-2">Clear</button>
+            <h6 class="mb-0">Check In Customer</h6>
+        <button type="button" class="btn btn-warning rounded-pill m-2">Clear</button>
         </div>
 
         <div class="row">
@@ -56,136 +56,63 @@
                     placeholder="Ram Shah">
                 <label for="floatingInput">  &nbsp;&nbsp; Search</label>
             </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                        placeholder="Ram Shah">
-                    <label for="floatingInput">Full Name</label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                        placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
-                </div>
-            </div>
+           
         </div>
+
+       
+            {% if form.errors %}
+            {% for field in form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+            {% endfor %}
+        
+            {% endif %}
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    {% for fields in form.visible_fields %}
+                    <div class="col-6">
+                        {{ fields.errors }}
+                        {{ fields.label_tag }}
+                        {{ fields }}
+                    </div>
+                    {% endfor %}
+                    <div class="col-6" style="display:none;">
+                        {% for field in form.hidden_fields %}
+                        <div style="display:none;">{{ field }}</div>
+                        {% endfor %}
+                </div>
+                <div class="col-6">
+                    <div class="">
+                        Room
+                        <select type="text" name="gc-room" class="form-control mt-2" maxlength="255"
+                            id="gc-room"></select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="">
+                        Room Number
+                        <select type="text" name="id_room" class="form-control mt-2" name="id_room[]"
+                            maxlength="255" id="id_room" multiple="multiple"></select>
+                    </div>
+                    
+                </div>
+               
+                <button type="submit" class="btn btn-warning rounded-pill m-2">Save</button>
+
+            </form>
+           
         
         <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="9800000000">
-                    <label for="floatingPassword">Phone Number</label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Butwal">
-                    <label for="floatingPassword">Address </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Nationality </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">ID Number  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Booked By </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Booking Date  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="file" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">ID Upload  </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">No of Person  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Male </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Female  </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">Child </label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">Other Gender </label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Nepali">
-                    <label for="floatingPassword">No of Days</label>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword"
-                        placeholder="Pasport or Citizan ">
-                    <label for="floatingPassword">ajsdfh</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <button type="button" class="btn btn-warning rounded-pill m-2">Save</button>
             <button type="button" class="btn btn-primary rounded-pill m-2">Preview</button>
         </div>
     </div>
@@ -195,7 +122,7 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Room Status Managemenet </h6>
+            <h6 class="mb-0">Customer Status Managemenet </h6>
             <form class="d-none d-md-flex ms-4">
                 <input class="form-control bg-dark border-0" type="search" placeholder="Search">
             </form>
@@ -203,32 +130,122 @@
         <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
-                    <tr class="text-white">
-                        <th scope="col">Name </th>
-                        <th scope="col">Check in Date </th>                        
-                        <th scope="col">Number of Person</th>
-                        <th scope="col">Email </th>
-                        <th scope="col">Phone Number </th>
-                        <th scope="col">Booked By</th>
-                        <th scope="col">Action</th>
+                    <tr role="row">
+                        <th>Customer Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Restaurant Bills</th>
+                        <th>Rooms</th>
+                        <th>Check In </th>
+
+                        <th>Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>   
-                        <td><a class="btn btn-sm btn-warning m-2" href="">Change </a><a class="btn btn-sm btn-primary " href=""> Status</a></td>
+                    {% for cus in customer_list %}
+                    <tr class="odd" role="row">
+                        <td class="sorting_1" id="user_id">{{cus.customer.full_name}}</td>
+
+                        <td>{{cus.customer.phone_number}}</td>
+
+                        <td>
+
+
+                            {{cus.total_resturent_amount}}
+
+                        </td>
+
+                        <td> {% for r in cus.bookd_roooms.room_id.all %}
+
+                            <span
+                                class="badge badge-xs badge-success">{{r.room_number|upper}}</span>
+                            {% endfor %}
+                        </td>
+
+
+                        <td>{{cus.customer.check_in|date:"Y-m-d h : m A "}}</td>
+
+
+
+                        <td><span>
+                                
+                                <a href="{% url 'checkin_edit' cus.id %}" type="button" class="btn btn-primary" >Edit  <span
+                                        class="btn-icon-start"><i class="fas fa-clipboard"></i></span></a>
+                        </td>
                     </tr>
-                   
+
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+
+
+var room_id = $("#id_room");
+room_id.select2({
+  placeholder: 'Select Room id'
+})
+
+$("#id_payment_type").select2({
+  placeholder: 'Choose Payment Type'
+})
+
+var gc_room = $("#gc-room")
+gc_room.select2({
+  placeholder: 'Select room Group',
+  ajax: {
+    url: "{% url 'get_room_by_group' %}",
+    dataType: 'json',
+    processResults:function(data){
+      console.log(data)
+      return{
+        results:$.map(data,function(item){
+          return {id:item.id,text:item.title}
+        })
+      }
+    },
+    
+
+  }
+})
+gc_room.on("select2:select",function(e){
+  var data = e.params.data;
+  console.log(data)
+  $.ajax({
+    url:"{% url 'checkin' %}",
+    dataType:"json",
+    data:{"room":data.text},
+    success:function(resp){
+     
+     
+
+      room_id.select2({
+        // allowClear: true,
+        data:$.map(resp,function(item){
+          // console.log(item)
+         return {id:item.id,text:item.room_number}
+        })
+      })
+    }
+    
+  })
+  
+})
+});
+</script>
+
+
+{% endblock scripts %}
+
+
+
+
+
+
 <!-- Recent Sales End -->
 {% endblock %} 

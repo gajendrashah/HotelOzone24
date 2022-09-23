@@ -1,3 +1,4 @@
+from datetime import date
 import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -5,17 +6,102 @@ from django.contrib import messages
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.http import Http404,JsonResponse
-from roomapp.form import ReservationCreationForm, RoomCreationForm
-from roomapp.models import Booked, Customer, Customer_list, Grouped_room, Room
+from roomapp.form import BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, ReservationCreationForm, RoomCreationForm
+from roomapp.models import Additional_id, Booked, Customer, Customer_list, Grouped_room, Room
 
 # Create your views here.
 @login_required(login_url="signin")
 def dashboard(request):
     return render(request, 'index.html')
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+def get_room_by_group(request):
+    grouped_room = Grouped_room.objects.all().values()
+    return JsonResponse(list(grouped_room),safe=False)
 
 @login_required(login_url="signin")
 def checkin(request):
-    return render(request, 'roomapp/checkin.html')
+    form = CustomerCretionForm
+    customer_list = Customer_list.objects.filter(status=True)
+    if request.method == "POST":
+        rooms = request.POST.getlist("id_room")
+        main_id_add= request.FILES.getlist("main_additional_id")
+
+        if rooms != []:
+            user_id = request.POST.get("user")
+            try:
+                users = Customer.objects.get(user=user_id)
+                if users:
+                    form = CustomerCretionForm(request.POST,request.FILES,instance=users)
+                else:
+                    form = CustomerCretionForm(request.POST,request.FILES)
+            except:
+                form = CustomerCretionForm(request.POST,request.FILES)
+            
+            if form.is_valid:
+                data = form.save(commit=False)
+                data.check_in = date.today()
+                form.save()
+                # print(form.pk)
+                child = form.cleaned_data.get("Child")
+                male_number = form.cleaned_data.get("male_number")
+                female_number = form.cleaned_data.get("female_number")
+                other_gender = form.cleaned_data.get("other_gender")
+                print("here is a id ",main_id_add)
+                user = Customer.objects.get(id = data.pk)
+                
+                for img in main_id_add:
+                    obs = Additional_id.objects.create(customer=user,add_id=img)
+                    obs.save()
+                # print(main_id_add)            
+            
+                res = [eval(i) for i in rooms]
+                get_room_list = Room.objects.filter(id__in=rooms)
+        
+                book_id = Booked.objects.create(customer_details=user, child=child,male_number=male_number,female_number=female_number,other_gender=other_gender)
+                book_id.room_id.set(res)
+                book_id.status=True
+                book_id.save()
+                x = Booked.objects.get(id=book_id.pk)
+                cus_active = Customer_list.objects.create(customer=user,bookd_roooms=x)
+                cus_active.save()
+                for room in get_room_list:
+                    room.status ="booked"
+                    room.save()
+                messages.success(request, 'Customer creation successfully ')
+                return redirect("checkin")
+        else:
+            messages.error(request, 'Please Provide room data')
+            return redirect("checkin")
+    
+    if is_ajax(request=request):
+        term = request.GET.get("room")
+        group = Grouped_room.objects.get(title=term)
+        room = Room.objects.filter(status="available",group=group).values()
+        # print(room)
+        return JsonResponse(list(room),safe=False)
+
+    context={"customer_list":customer_list,"form":form}
+    return render(request, 'roomapp/checkin.html',context)
+
+def checkin_edit(request,pk):
+    cus = Customer.objects.get(id=pk)
+    b = Booked.objects.get(customer_details=cus)
+    print(b)
+    customer_form = CustomerCretionForm1(instance=cus)
+    book_form = BookedAccountupdateForm(instance=b)
+    if request.method=="POST":
+        customer_form = CustomerCretionForm1(request.POST,request.FILES,instance=cus)
+        book_form = BookedAccountupdateForm(request.POST,request.FILES,instance=b)
+        if customer_form.is_valid():
+            customer_form.save()
+        if book_form.is_valid():
+            book_form.save()
+        return redirect("checkin")
+
+    context={"customer_form":customer_form,"book_form":book_form}
+    return render(request,"roomapp/check_in_edit.html",context)
 
 @login_required(login_url="signin")
 def checkout(request):
