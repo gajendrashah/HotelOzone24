@@ -47,12 +47,12 @@
     <div class="bg-secondary rounded h-100 p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Check In Customer</h6>
-        <button type="button" class="btn btn-warning rounded-pill m-2">Clear</button>
+        <button type="button" id="clear_form" class="btn btn-warning rounded-pill m-2">Clear</button>
         </div>
 
         <div class="row">
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput"
+                <input type="text"  class="form-control" id="floatingInput"
                     placeholder="Ram Shah">
                 <label for="floatingInput">  &nbsp;&nbsp; Search</label>
             </div>
@@ -76,7 +76,7 @@
             {% endfor %}
         
             {% endif %}
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form  id = "configform" action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
                     {% for fields in form.visible_fields %}

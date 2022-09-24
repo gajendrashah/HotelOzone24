@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404,JsonResponse
 from roomapp.form import Advance_paymentForm, BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, Non_room_OrderCreationForm, Order_creation_Non_room_user, OrderCreationForm, ReservationCreationForm, RoomCreationForm
 from roomapp.models import Additional_id, Advance_payment, Booked, Ch_out, Customer, Customer_list, Grouped_room, Non_room_user, Order, Room
+from django.db.models import Q
 
 # Create your views here.
 @login_required(login_url="signin")
@@ -19,6 +20,28 @@ def is_ajax(request):
 def get_room_by_group(request):
     grouped_room = Grouped_room.objects.all().values()
     return JsonResponse(list(grouped_room),safe=False)
+
+
+def customerdata(request):
+    result = []
+    if "term" in request.GET:
+        term = request.GET.get("term")
+        print(term)
+        obj = Customer.objects.filter(Q(full_name__icontains=term) | Q(phone_number__icontains=term))
+        print(obj)
+        for t in obj:
+            result.append(t.id)
+            result.append(t.full_name)
+
+        return JsonResponse(list(result),safe=False)
+
+
+
+def get_user(request):
+    data = request.GET.get("user")
+    customer = Customer.objects.filter(full_name__icontains=data).values()
+
+    return JsonResponse(list(customer),safe=False)
 
 @login_required(login_url="signin")
 def checkin(request):
@@ -356,14 +379,16 @@ def reservation_checkin(request):
 
         return JsonResponse({"msg":"This is working "},safe=False)
 
-def reservation_cancle(request,pk):
-    booked = get_object_or_404(Booked,id=pk)
-    for r in booked.room_id.all():
-        r.status = "available"
-        r.save()
-        booked.delete()
-        messages.success(request,"Booking cancle sucssfully !!!")
-    return redirect("reserveroom")
+def reservation_cancle(request):
+    if request.method == "POST":
+        pk = request.POST.get("bookd_id")
+        booked = get_object_or_404(Booked,id=pk)
+        for r in booked.room_id.all():
+            r.status = "available"
+            r.save()
+            booked.delete()
+        return JsonResponse({"msg":"Booking cancle sucssfully !!!"},safe=False)
+    # return JsonResponse({"msg","reserveroom"},safe=False)
 
 
 
@@ -379,10 +404,17 @@ def with_room(request):
     order = Order.objects.all().order_by("-order_date")
     form = OrderCreationForm
     
-    
+    print(request.POST)
     if request.method == "POST":
-        if request.POST.get("room") != None:
-            form = OrderCreationForm(request.POST) 
+        if request.POST.get("room_id") != None:
+            
+            
+            room_id = request.POST.get("room_id")
+            cus = Order.objects.filter(room=room_id)
+
+            form = OrderCreationForm(request.POST)
+            r = form.data["room"]
+            print(r)
             if form.is_valid():
                 form.save()
                 messages.success(request,"Order Create successfully")

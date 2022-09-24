@@ -8,7 +8,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel"style="color:black">Procced to Check In</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -30,6 +30,30 @@
   </div>
   
 
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"style="color:black">Procced to Cancel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3 form-check">
+            <form action="" method="POST">
+                {% csrf_token %}
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" checked="checked">
+            <label class="form-check-label" for="exampleCheck1">Click To Procced Cancel</label>
+            </form>
+        </div>
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button"  id="save_ch1" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <!-- Sale & Revenue Start -->
 <div class="container-fluid pt-4 px-4">
@@ -78,6 +102,8 @@
     <div class="bg-secondary rounded h-100 p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Room Reservation Form</h6>
+            <button type="button" id="clear_form" class="btn btn-warning rounded-pill m-2">Clear</button>
+
         </div>
 
         <div class="row">
@@ -87,8 +113,12 @@
                     placeholder="Ram Shah">
                 <label for="floatingInput">  &nbsp;&nbsp; Search</label>
             </div>
-           
-        <form action="" method="POST" enctype="multipart/form-data">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} ">{{ message }}.</div>
+           {% endfor %}
+            {% endif %}
+        <form id= "configform"action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
         <div class="row">
             {% if form.errors %}
@@ -177,8 +207,9 @@
                                 <button type="button" onclick="checkIn_pro({{customer.id }})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                    Checkin
                                   </button>
-                                <a type="button" href="{% url "reservation_cancle" customer.id %}" class="btn btn-sm btn-warning mx-1"
-                                    style="float: none;">Cancle</a>
+                                  <button type="button" onclick="cancel_pro({{customer.id }})" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                    Cancel
+                                   </button>
                                     <a  href ="{% url "reservation_edit" customer.id%}" type="button" class="btn btn-primary">Edit</a>
                                     {% comment %} <button type="button" class="btn btn-sm btn-success saveBtn"
                                     style="float: none; display: none;">Save</button>
@@ -253,7 +284,44 @@
 
        
     };
- 
+ function cancel_pro(a){
+    console.log(a)
+    var a_ = a
+            console.log(a)
+
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            $("#save_ch1").click(function(){
+
+                console.log("here i am")
+
+                if($("input[type='checkbox']").prop("checked") == true){
+
+                    $.ajax({
+
+                        url: "{% url 'reservation_cancle' %}",
+                        data:{"bookd_id":a, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        method: "POST",
+                       
+                        datatype: "json",
+                        success:function(resp){
+                            console.log(resp)
+                            $("#exampleModal2").hide()
+                            location.reload(true)
+                            
+                        }
+
+
+                    });
+
+                    
+                }
+                else{
+                alert("Go Back")
+            }
+
+            })
+
+ };
 
 
 
