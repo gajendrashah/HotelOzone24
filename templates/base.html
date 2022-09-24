@@ -29,6 +29,8 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Template Stylesheet -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
@@ -155,9 +157,76 @@
     <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $( function() {
+            $( "#id_check_in" ).datepicker({
+                dateFormat: 'yy-mm-dd',
+            });
+
+          } );
+
+          $('#id_room').select2({
+            width: 450, 
+          });
+
+    </script>
+    <script>
+
+        $( function() {
+  
+ 
+            $( "#floatingInput" ).autocomplete({
+              source: "http://localhost:8000/customerdata/",
+              // minLength: 2,
+              select: function( event, ui ) {
+                // console.log(ui)
+                $.ajax({
+                  url:"http://localhost:8000/get_user/",
+                  dataType:"json",
+                  data:{"user":ui.item.value},
+                  success:function(data){
+                    console.log(data)
+                    console.log(data[0]["main_id"])
+                    $("#id_full_name").val(data[0]["full_name"])
+                    $("#id_user").val(data[0]["user"])
+                    $("#id_organization").val(data[0]['organization'])
+                    $("#id_designation").val(data[0]['designation'])
+                    $("#id_passport_id_number").val(data[0]['passport_id_number'])
+                    $("#id_location").val(data[0]['location'])
+                    $("#id_phone_number").val(data[0]['phone_number'])
+                    $("#id_nationality").val(data[0]['nationality'])
+                    $("#id_tel_fax").val(data[0]['tel_fax'])
+                    $("#id_traval_agent").val(data[0]['traval_agent'])
+                    $("#id_bill_setteled_by").val(data[0]['bill_setteled_by'])
+                    $("#id_booked_by").val(data[0]['booked_by'])
+                    var url = data[0]['main_id']
+               
+                }
+                  
+                  
+                })
+        
+              
+               
+                
+              },
+              close: function( event, ui ) {
+                $('#cus_create').trigger("reset");
+              }
+            } );
+          } );
+
+    </script>
+    <script>
+        $("#clear_form").click(function(){
+            $('#configform')[0].reset();
+            $('#floatingInput').val("");
+        })
+    </script>
+
 </body>
 
 </html>

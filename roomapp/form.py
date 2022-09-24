@@ -122,18 +122,16 @@ class CustomerCretionForm1(forms.ModelForm):
 
 
 class OrderCreationForm(forms.ModelForm):
+    room = forms.ModelChoiceField(queryset=Room.objects.filter(status="booked"))
     class Meta:
         model = Order
         fields = '__all__'
-        exclude =["id","customer","order_status"]
+        exclude =["id","customer","order_status","payment_type"]
         
         widgets ={
             "order_id" : forms.TextInput(attrs={"class":"form-control"}),
-            "customer" : forms.Select(attrs={"class":"form-control"}),
-           
+            "room" : forms.Select(attrs={}),
             "total" : forms.NumberInput(attrs={"class":"form-control"}),
-            "order_status" : forms.Select(attrs={"class":"form-control"}),
-            "payment_type" : forms.Select(attrs={"class":"form-control"}),
         }
 
 class Order_creation_Non_room_user(forms.ModelForm):

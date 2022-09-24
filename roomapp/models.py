@@ -224,21 +224,16 @@ class Ch_out(models.Model):
 
 
 class Order(models.Model):
-    PAYMENTTYPE = (('PAID', 'PAID'), ('UNPAID', 'UNPAID'))
-    PRODUCTDELIVARY = (('NEW', 'NEW'), ('APPROVED', 'APPROVED'),('CANCLE','CANCLE'),('DISPATCHED','DISPATCHED'),('RECIVED','RECIVED'),('Delivered','Delivered'))
     order_id = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True,null=True)
     room = models.ForeignKey(Room,on_delete=models.CASCADE,blank=True,null=True)
-    # kitchen_item = models.ManyToManyField(Resturent_items,blank=True)
-    # bar_items = models.ManyToManyField(Bar_items,blank=True)
-    # qty = models.FloatField(max_length=255, null=True)
+    
     total = models.CharField(max_length=255, null=True ,blank=True)
-    order_status = models.CharField(max_length=255,choices=PRODUCTDELIVARY,null=True,default="NEW")
-    payment_type = models.CharField(max_length=255,choices=PAYMENTTYPE,null=True,default="UNPAID")
-    order_date= models.DateTimeField(auto_now_add=True,auto_now=False,null=True)
+  
+    order_date= models.DateTimeField(auto_now_add=True,null=True)
 
     def __str__(self):
-        return f'{self.order_id} {self.room.room_number}'
+        return f'{self.order_id}'
 
 
     

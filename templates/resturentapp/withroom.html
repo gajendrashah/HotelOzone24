@@ -6,7 +6,7 @@
 <div class="col-12 mt-4 order1">
     {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} "><strong>Warning!</strong> {{ message }}.</div>
+    <div class="alert alert-{{ message.tags }} ">{{ message }}.</div>
    {% endfor %}
     {% endif %}
     {% if form.errors %}
@@ -25,7 +25,7 @@
     {% endfor %}
 
     {% endif %}
-    <form action="" method="POST">
+    <form action="">
         {% csrf_token %}
         <div class="form-row">
             {% for field in form %}
@@ -34,7 +34,7 @@
                 {{field}}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Create Order</button>
+            <button type="button" id="orderCreate"  class="btn btn-primary">Create Order</button>
         </div>
 
 
@@ -116,5 +116,23 @@
     </div>
 </div>
 
+{% block scripts %}
 
+<script>
+
+    var order_id = $("#id_order_id").val();
+    var room = $("#id_room").val();
+    var total = $("#id_total").val();
+    {% comment %} var room_id = $('#id_room').find(':selected').text; {% endcomment %}
+
+    $("#orderCreate").click(function(){
+        console.log(order_id,total,room)
+    })
+
+    
+
+</script>
+
+
+{% endblock scripts %}
 {% endblock content %}

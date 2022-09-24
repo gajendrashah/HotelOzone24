@@ -4,6 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
+    path("customerdata/",views.customerdata,name="customerdata"),
+    path("get_user/",views.get_user,name="get_user"),
+
     path('checkin/', views.checkin, name='checkin'),
     path('checkin_edit/<int:pk>', views.checkin_edit, name='checkin_edit'),
     path('checkout/', views.checkout, name='checkout'),
@@ -11,7 +14,7 @@ urlpatterns = [
     path('reserveroom/', views.reserveroom, name='reserveroom'),
     path('reservation_edit/<int:pk>/', views.reservation_edit, name='reservation_edit'),
     path('reservation_checkin/', views.reservation_checkin, name='reservation_checkin'),
-    path('reservation_cancle/<int:pk>', views.reservation_cancle, name='reservation_cancle'),
+    path('reservation_cancle/', views.reservation_cancle, name='reservation_cancle'),
     path('roommanager/', views.roommanager, name='roommanager'),
     path('report/', views.customerdetail, name='report'),
     path('signin/', views.user_login, name='signin'),  
