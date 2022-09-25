@@ -165,3 +165,22 @@ class Non_room_OrderCreationForm(forms.ModelForm):
             "order_status" : forms.Select(attrs={"class":"form-control"}),
             "payment_type" : forms.Select(attrs={"class":"form-control"}),
         }
+
+
+class RoomUpdateForm(forms.ModelForm):
+    class Meta:
+        model= Room
+        fields = ["status",]
+
+
+        widgets ={
+        "room_name" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "room_number" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "group" : forms.Select(attrs={"class":"form-control mt-2"}),
+        "room_type" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "price_pernight" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "status" : forms.Select(attrs={"class":"form-control mt-2"}),
+        "room_image" : forms.FileInput(attrs={"class":"form-control mt-2"}),
+        
+ 
+        }

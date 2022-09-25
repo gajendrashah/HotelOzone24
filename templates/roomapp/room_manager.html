@@ -2,79 +2,139 @@
 {% block content %}  
 <!-- Sale & Revenue Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Today Room</p>
-                    <h6 class="mb-0">24</h6>
-                </div>
-            </div>
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Room In Cleaning and maintenance  </h6>
+            {% if messages  %}
+        {% for message in messages %}
+        
+        <div class="alert alert-{{message.tags}} " role="alert">
+            {{message}}
+          </div>
+          {% endfor %}
+          {% endif %}
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Avilable Room</p>
-                    <h6 class="mb-0">4</h6>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Room Cleaning</p>
-                    <h6 class="mb-0">4</h6>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Booked Room</p>
-                    <h6 class="mb-0">4</h6>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr role="row">
+                      
+                        <th>Room Number</th>
+                        <th>Room Group</th>
+                        <th>Room Price</th>
+                        <th>Room Status</th>
+                        
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody >
+                    {% for cus in rooms_mainc %}
+
+                    <tr class="odd" role="row">
+                        <td>{{cus.room_number}}</td>
+                        
+                        <td>{{cus.group|upper}}</td>
+                        <td>{{cus.price_pernight}}</td>
+                        <td>
+                            {% if cus.status == "available" %}
+                            <span class="badge badge-xs badge-success">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "booked" %}
+                            <span class="badge badge-xs badge-danger">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "cleaning" %}
+                            <span class="badge badge-xs badge-dark">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "reserved" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "not-confirm" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "maintenance" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                        </td>
+
+                        
+                        <td><span>
+                            <a class="btn btn-primary" href="{% url 'room_update' cus.id %}" class="mr-4 update_customer" ><i class="fa fa-pencil color-muted"></i> update</a>
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-<!-- Sale & Revenue End -->
 <!-- Recent Sales Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Room Status Managemenet </h6>
-            <form class="d-none d-md-flex ms-4">
-                <input class="form-control bg-dark border-0" type="search" placeholder="Search">
-            </form>
+            {% if messages  %}
+        {% for message in messages %}
+        
+        <div class="alert alert-{{message.tags}} " role="alert">
+            {{message}}
+          </div>
+          {% endfor %}
+          {% endif %}
         </div>
         <div class="table-responsive">
-            <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <table class="table text-start align-middle table-bordered table-hover mb-0" id="myTable">
                 <thead>
-                    <tr class="text-white">
-                        <th scope="col">Room Type</th>
-                        <th scope="col">Room Number</th>
+                    <tr role="row">
+                      
+                        <th>Room Number</th>
+                        <th>Room Group</th>
+                        <th>Room Price</th>
+                        <th>Room Status</th>
                         
-                        <th scope="col">Room Price</th>
-                       
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th>Action</th>
+
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody >
+                    {% for cus in allrooms %}
+
+                    <tr class="odd" role="row">
+                        <td>{{cus.room_number}}</td>
                         
-                        <td>01 Jan 2045</td>
-                        <td>INV-0123</td>
-                        <td>Jhon Doe</td>
-                       
-                        <td>Paid</td>
-                        <td><a class="btn btn-sm btn-primary" href="">Change Status</a></td>
+                        <td>{{cus.group|upper}}</td>
+                        <td>{{cus.price_pernight}}</td>
+                        <td>
+                            {% if cus.status == "available" %}
+                            <span class="badge badge-xs badge-success">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "booked" %}
+                            <span class="badge badge-xs badge-danger">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "cleaning" %}
+                            <span class="badge badge-xs badge-dark">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "reserved" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "not-confirm" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                            {% if cus.status == "cancled" %}
+                            <span class="badge badge-xs badge-warning">{{cus.status|upper}}</span>
+                            {% endif %}
+                        </td>
+
+                        
+                        <td><span>
+                            <a class="btn btn-primary" href="{% url 'room_update' cus.id %}" class="mr-4 update_customer" ><i class="fa fa-pencil color-muted"></i> update</a>
+                            </span>
+                        </td>
                     </tr>
-                   
+
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

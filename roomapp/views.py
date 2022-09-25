@@ -1,19 +1,22 @@
 from datetime import date, timedelta
 import json
+from multiprocessing import context
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.http import Http404,JsonResponse
-from roomapp.form import Advance_paymentForm, BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, Non_room_OrderCreationForm, Order_creation_Non_room_user, OrderCreationForm, ReservationCreationForm, RoomCreationForm
+from roomapp.form import Advance_paymentForm, BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, Non_room_OrderCreationForm, Order_creation_Non_room_user, OrderCreationForm, ReservationCreationForm, RoomCreationForm, RoomUpdateForm
 from roomapp.models import Additional_id, Advance_payment, Booked, Ch_out, Customer, Customer_list, Grouped_room, Non_room_user, Order, Room
 from django.db.models import Q
 
 # Create your views here.
 @login_required(login_url="signin")
 def dashboard(request):
-    return render(request, 'index.html')
+    cus = Customer.objects.all().order_by("-check_in")
+    context = {"customer":cus[:5]}
+    return render(request, 'index.html',context)
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
@@ -394,34 +397,98 @@ def reservation_cancle(request):
 
 @login_required(login_url="signin")
 def roommanager(request):
+    rooms= Room.objects.all().exclude(status__in=["cleaning","maintenance"])
+    rooms_mainc= Room.objects.all().filter(status__in=["cleaning","maintenance"])
+    if request.method == "POST":
 
-    return render(request, 'roomapp/room_manager.html')
+        form = RoomCreationForm(request.POST)
+        if form.is_valid():
+            first_number = form.cleaned_data.get("initial_number")
+            last_number = form.cleaned_data.get("final_number")
+            
+            room_group = form.cleaned_data.get("room_name")
+            price = form.cleaned_data.get("price")
+            room_list = list(range(first_number,last_number+1))
+            obj = Grouped_room.objects.create(title=room_group)
+            # obj.save(commit=False)
+            obj.save()
+            group_id = Grouped_room.objects.get(id=obj.id)
+
+            for data in room_list:
+                obj = Room.objects.create(group= group_id,room_number=data,price_pernight=price)
+                obj.save()
+            messages.success(request,"Room are Createted !!!")
+            return redirect("roomdetails")
+        else:
+            messages.error(request,"Room Cant Create !!")
+            return redirect("roomdetails")
+
+
+
+
+    context = {"allrooms":rooms,"rooms_mainc":rooms_mainc}
+    return render(request, 'roomapp/room_manager.html',context)
+
+
+def room_update(request,pk):
+    r = get_object_or_404(Room,id=pk)
+    form = RoomUpdateForm(instance=r)
+    if request.method == 'POST':
+        form = RoomUpdateForm(request.POST,instance=r)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Room update successfully" )
+            return redirect('roommanager')
+        else:        
+            messages.error(request, "Order Cant made" )
+            return redirect('room_update',pk=pk)
+
+
+   
+    context = {'form':form}
+    return render (request,"roomapp/room_update.html",context)
+
+def room_delete(request,pk):
+    customer = get_object_or_404(Room,id=pk)
+    customer.delete()
+    messages.success(request, "Room Delete successfully" )
+    return redirect('roomdetails')
 
 def customerdetail(request):
-    return render(request, 'roomapp/room_manager.html')
+    cust = Customer.objects.all()
+    print(len(cust))
+
+    context={"customer":cust}
+    return render(request, 'roomapp/report.html',context)
 
 def with_room(request):
     order = Order.objects.all().order_by("-order_date")
     form = OrderCreationForm
     
-    print(request.POST)
     if request.method == "POST":
         if request.POST.get("room_id") != None:
             
             
             room_id = request.POST.get("room_id")
-            cus = Order.objects.filter(room=room_id)
+            order_id = request.POST.get("order_id")
+            total = request.POST.get("total")
+            # cus = Order.objects.filter(room=room_id)
+            print(room_id,order_id,total)
 
-            form = OrderCreationForm(request.POST)
-            r = form.data["room"]
-            print(r)
-            if form.is_valid():
-                form.save()
-                messages.success(request,"Order Create successfully")
-                return redirect("withroom")
-            else:
-                 messages.error(request,"Order order cant create !!")
-                 return redirect("withroom")
+            # form = OrderCreationForm(request.POST)
+            r = Room.objects.get(room_number=room_id) #room id
+            print(r.id)
+            c = Booked.objects.filter(room_id__id=r.id).values()
+
+            c_id= c[0]["customer_details_id"]
+
+        
+            obj = Order.objects.create(order_id=order_id,customer_id=c_id,
+                room=r,total=total
+            )
+            # obj.order_date = date.today()
+            obj.save()
+            return JsonResponse({"msg":"ok"},safe=False)
         
 
     context ={"form":form,"order":order}
@@ -436,21 +503,21 @@ def order_update(request,pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Order update successfully" )
-            return redirect('order')
+            return redirect('withroom')
         else:        
             messages.error(request, "Order Cant made" )
-            return redirect('order_update',pk=pk)
+            return redirect('withroom_update',pk=pk)
 
 
    
     context = {'form':form}
-    return render (request,"order_update.html",context)
+    return render (request,"resturentapp/withroom_update.html",context)
 
 def order_delete(request,pk):
     customer = get_object_or_404(Order,id=pk)
     customer.delete()
-    messages.success(request, "Customer Delete successfully" )
-    return redirect('order')
+    messages.success(request, "Order Delete successfully" )
+    return redirect('withroom')
 
 def with_out_room(request):
     form = Order_creation_Non_room_user
@@ -471,23 +538,25 @@ def with_out_room(request):
 
 def with_out_room_update(request,pk):
     order = get_object_or_404(Non_room_user,id=pk)
+    print(order)
     form = Non_room_OrderCreationForm(instance=order)
     if request.method == 'POST':
         form = Non_room_OrderCreationForm(request.POST,instance=order)
         if form.is_valid():
             form.save()
-            messages.success(request,"order Updated !!!")
-            return redirect('without_room')
+            messages.success(request,"Order Updated !!!")
+            return redirect('withoutroom')
         else:
             messages.error(request,"order  Cant Updated !!!")
-            return redirect('without_room')
+            return redirect('withoutroom_update')
     context = {'form':form}
+    return render(request, "resturentapp/without_room_update.html",context)
 
 def with_out_room_delete(request,pk):
     customer = get_object_or_404(Non_room_user,id=pk)
     customer.delete()
-    messages.success(request, "Customer Delete successfully" )
-    return redirect('without_room')
+    messages.success(request, "Oder Delete successfully" )
+    return redirect('withoutroom')
 
 
 def user_login(request):

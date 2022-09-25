@@ -1,0 +1,45 @@
+<thead>
+    <tr role="row">
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Order Date</th>
+        
+        <th>Total</th>
+        <th>Remaing amount</th>
+        <th>Payment Mode</th>
+        <th>Action</th>
+
+    </tr>
+</thead>
+<tbody>
+    {% for cus in non_room_user %}
+
+    <tr class="odd" role="row">
+        <td class="sorting_1" id="user_id">{{cus.order_id}}</td>
+        <td>{{cus.full_name}}</td>
+        <td>{{cus.phone_number}}</td>
+        <td>{{cus.email}}</td>
+        <td>{{cus.order_date}}</td>
+        <td>{{cus.total}}</td>
+        <td>{{cus.remaing_amount}}</td>
+        <td>{{cus.Payment_mode}}</td>
+       
+      
+        
+
+
+
+        <td>
+                <a class="btn btn-primary" href="{% url 'withoutroom_update' cus.id %}"
+                    class="my-4 update_customer"><i
+                        class="fa fa-pencil color-muted"></i> Order Update</a>
+                
+                        <a class="btn btn-warning" href="{% url 'withoutroom_delete' cus.id %}"><i
+                        class="fa fa-close color-danger"></i>Delete</a>
+        </td>
+    </tr>
+
+    {% endfor %}
+</tbody>

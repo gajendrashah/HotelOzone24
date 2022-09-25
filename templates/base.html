@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
-    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -158,7 +158,7 @@
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <!-- Template Javascript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>    <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
     <script>
         $( function() {
@@ -225,6 +225,50 @@
             $('#configform')[0].reset();
             $('#floatingInput').val("");
         })
+    </script>
+    <script>
+
+      
+    
+        $("#orderCreate").click(function(){
+            var order_id = $("#id_order_id").val();
+            var room = $("#id_room").select2("data")[0]["text"];
+            var total = $("#id_total").val();
+            console.log(order_id,total,room)
+
+            $.ajax({
+
+                url: "{% url 'withroom' %}",
+                data:{"order_id":order_id,
+                "room_id":room,
+                "total":total,
+
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+                method: "POST",
+               
+                datatype: "json",
+                success:function(resp){
+                    
+                 console.log(resp["msg"])
+                 if (resp["msg"]=="ok"){
+                    $.notify("Order Create successfully ", "success");
+                    location.reload(true)
+                 }
+                                      
+                }
+
+
+            });
+
+        })
+    
+        $(document).ready( function () {
+            $('#myTable').DataTable({
+                pagingType: 'full',
+            });
+
+        } );
+    
     </script>
 
 </body>

@@ -16,6 +16,10 @@ urlpatterns = [
     path('reservation_checkin/', views.reservation_checkin, name='reservation_checkin'),
     path('reservation_cancle/', views.reservation_cancle, name='reservation_cancle'),
     path('roommanager/', views.roommanager, name='roommanager'),
+    path("room_update/<str:pk>/",views.room_update,name="room_update"),
+    path("room_delete/<str:pk>/",views.room_delete,name="room_delete"),
+
+
     path('report/', views.customerdetail, name='report'),
     path('signin/', views.user_login, name='signin'),  
     path('signup/', views.user_signup, name='signup'),  
@@ -28,7 +32,7 @@ urlpatterns = [
 
     path('resturant/with_out_room/', views.with_out_room, name='withoutroom'),
     path('resturant/with_out_room_update/<int:pk>/', views.with_out_room_update, name='withoutroom_update'),
-    path('resturant/with_out_room_update/<int:pk>/', views.with_out_room_delete, name='withoutroom_delete'),
+    path('resturant/with_out_room_delete/<int:pk>/', views.with_out_room_delete, name='withoutroom_delete'),
 
 
 
