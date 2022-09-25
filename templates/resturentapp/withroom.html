@@ -2,137 +2,121 @@
 {% load static %}
 
 {% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary rounded h-100 p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Order Creation Form</h6>
 
-<div class="col-12 mt-4 order1">
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} ">{{ message }}.</div>
-   {% endfor %}
-    {% endif %}
-    {% if form.errors %}
-    {% for field in form %}
-    {% for error in field.errors %}
-    <div class="alert alert-danger">
-        <strong>{{ error|escape }}</strong>
-    </div>
-    {% endfor %}
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-    <div class="alert alert-danger">
-        <strong>{{ error|escape }}</strong>
-    </div>
-    {% endfor %}
-
-    {% endif %}
-    <form action="">
-        {% csrf_token %}
-        <div class="form-row">
-            {% for field in form %}
-            <div class="form-group col-md-6">
-                {{field.label}} :
-                {{field}}
-            </div>
-            {% endfor %}
-            <button type="button" id="orderCreate"  class="btn btn-primary">Create Order</button>
         </div>
+        <div class="row">
+            
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} ">{{ message }}.</div>
+                {% endfor %}
+                {% endif %}
+                <div class="row">
+                {% if form.errors %}
+                {% for field in form %}
+                {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% endfor %}
 
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
 
-    </form>
-
-</div>
-<div class="row order1">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header pb-0">
-                <h4 class="card-title">Room Customer</h4>
+                {% endif %}
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <div id="employees_wrapper" class="dataTables_wrapper">
+                <form action="">
+                    {% csrf_token %}
+                   
+                        {% for field in form %}
+                        <div class="form-group col-6">
+                            {{field.label}} :
+                            {{field}}
+                        </div>
+                        {% endfor %}
+                        <button type="button" id="orderCreate" class="btn btn-primary">Create Order</button>
+                 
 
 
-                        <table id="customer" class="display dataTable" style="min-width: 845px" role="grid"
-                            aria-describedby="employees_info">
-                            <thead>
-                                <tr role="row">
-                                    <th>Order ID</th>
-                                    <th>Room number</th>
-                                    
-                                    <th>Total</th>
-                                    <th>Order Status</th>
-                                    <th>Payment Type</th>
-                                    <th>Order Date</th>
-                                    <th>Action</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for cus in order %}
-
-                                <tr class="odd" role="row">
-                                    <td class="sorting_1" id="user_id">{{cus.order_id}}</td>
-                                    <td>{{cus.room.room_name}} </td>
-                                 
-                                    <td>{{cus.total}}</td>
-                                    {% if cus.order_status == "NEW"%}
-                                    <td><span class='badge badge-xs badge-warning'>{{cus.order_status}}</span></td>
-                                    {% endif %}
-                                    {% if cus.order_status == "APPROVED"%}
-                                    <td><span class='badge badge-xs badge-primary'>{{cus.order_status}}</span></td>
-                                    {% endif %}
-                                    {% if cus.order_status == "Delivered"%}
-                                    <td><span class='badge badge-xs badge-success'>{{cus.order_status}}</span></td>
-                                    {% endif %}
-                                    {% if cus.order_status == "CANCLE"%}
-                                    <td><span class='badge badge-xs badge-dark'>{{cus.order_status}}</span></td>
-                                    {% endif %}
-                                    <td>{{cus.payment_type}}</td>
-                                    <td>{{cus.order_date}}</td>
+                </form>
+        </div>
+    </div>
+</div>
+    <div class="row order1">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h4 class="card-title text-dark">Room Customer</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="employees_wrapper" class="dataTables_wrapper">
 
 
+                            <table id="customer" class="display dataTable" style="min-width: 845px" role="grid"
+                                aria-describedby="employees_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th>Order ID</th>
+                                        <th>Room number</th>
 
-                                    <td><span>
-                                            <a href="{% url 'withroom_update' cus.id %}"
-                                                class="mr-4 update_customer"><i
-                                                    class="fa fa-pencil color-muted"></i> </a>
-                                            <a href="{% url 'withroom_delete' cus.id %}" data-toggle="tooltip"
-                                                data-placement="top" title=""
-                                                data-original-title="Delete {{cus.user}}"><i
-                                                    class="fa fa-close color-danger"></i></a></span>
-                                    </td>
-                                </tr>
+                                        <th>Total</th>
+                                        <th>Order Date</th>
+                                        <th>Action</th>
 
-                                {% endfor %}
-                            </tbody>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cus in order %}
 
-                        </table>
+                                    <tr class="odd" role="row">
+                                        <td class="sorting_1" id="user_id">{{cus.order_id}}</td>
+                                        <td>{{cus.room.room_number}} </td>
+
+                                        <td>{{cus.total}}</td>
+
+                                        <td>{{cus.order_date}}</td>
 
 
+
+                                        <td><span>
+                                                <a class="btn btn-primary my-1 mx-1"
+                                                    href="{% url 'withroom_update' cus.id %}"
+                                                    class="mr-4 update_customer"><i
+                                                        class="fa fa-pencil color-muted"></i> Update</a>
+                                                <a class="btn btn-primary my-1 mx-1"
+                                                    href="{% url 'withroom_delete' cus.id %}" data-toggle="tooltip"
+                                                    data-placement="top" title=""
+                                                    data-original-title="Delete {{cus.user}}"><i
+                                                        class="fa fa-close color-danger"></i>Delete</a></span>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-{% block scripts %}
-
-<script>
-
-    var order_id = $("#id_order_id").val();
-    var room = $("#id_room").val();
-    var total = $("#id_total").val();
-    {% comment %} var room_id = $('#id_room').find(':selected').text; {% endcomment %}
-
-    $("#orderCreate").click(function(){
-        console.log(order_id,total,room)
-    })
-
-    
-
-</script>
+    {% block scripts %}
 
 
-{% endblock scripts %}
-{% endblock content %}
+
+
+    {% endblock scripts %}
+    {% endblock content %}

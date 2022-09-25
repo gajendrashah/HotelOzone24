@@ -64,7 +64,7 @@ class Room(models.Model):
         ("not-confirm","confirm"),
         ("cancled","cancled"),
         ("cleaning", "cleaning"),
-        ("maintainance", "maintainance"),)
+        ("maintenance", "maintenance"),)
     room_number = models.CharField(max_length=255)
     group = models.ForeignKey(Grouped_room,on_delete=models.CASCADE,blank=True)
     price_pernight = models.CharField(max_length=255)
@@ -164,7 +164,7 @@ class Customer_list(models.Model):
     def total_resturent_amount(self):
         res_total = 0.0
         query = Order.objects.filter(
-            customer=self.customer, payment_type="UNPAID").all()
+            customer=self.customer).all()
         for q in query:
             res_total += float(q.total)
 
@@ -244,13 +244,21 @@ class Order(models.Model):
 
 
 class Non_room_user(models.Model):
-    PAYMENTTYPE = (('PAID', 'PAID'), ('UNPAID', 'UNPAID'))
+    Payment_mode = (
+        ("Esewa", "Eswa"),
+        ("Khalti", "Khalti"),
+        ("Bank Transfer", "Bank Transfer"),
+        ("Cash", "Cash"),
+        ("Other", "Other"),
+    )
     order_id = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=True)
     full_name = models.CharField(max_length=255,)
     phone_number = models.IntegerField()
     email = models.EmailField()
     total = models.FloatField(max_length=255, null=True ,blank=True)
-    payment_type = models.CharField(max_length=255,choices=PAYMENTTYPE,null=True,default="UNPAID")
+    amount_paid = models.FloatField(default=0)
+    remaing_amount = models.FloatField(default=0)
+    Payment_mode = models.CharField(max_length=255,choices=Payment_mode,null=True,default="UNPAID")
     order_date = models.DateTimeField(auto_now_add=True,auto_now=False)
     
 
