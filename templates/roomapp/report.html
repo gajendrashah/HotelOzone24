@@ -1,6 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}  
 <!-- Sale & Revenue Start -->
+<div class="modal fade bd-example-modal-lg"  id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-dark"  >Check out </h5>
+
+            <span id="prev_room_disc" class=" mx-3 badge badge-lg  badge-outline-primary h5"></span>
+            <span id="prev_restu_disc" class=" mx-3 badge  badge-lg  badge-outline-success h5"></span>
+
+
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" style="background-color:black">
+            <div class="col-sm-12 ">
+                <div class="bg-secondary rounded h-100 p-4">
+                    <h6 class="mb-4" id ="basic_acc"></h6>
+                    <div class="accordion" id="accordionExample">
+                      
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"  data-dismiss="modal">Close</button>
+            <!-- <button type="button" id="calculate" class="btn btn-primary">Calculate</button> -->
+            <button type="button" id="rms_chk" class="btn btn-primary">Procced To Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-sm-6 col-xl-3">
@@ -90,7 +124,7 @@
                         <td>{{cus.check_out}}</td>
                         
                         <td>
-                            <a class="btn btn-primary btn-sm" href="{% url 'room_update' cus.id %}" class="update_customer" > update</a>
+                            <a class="btn btn-primary btn-sm" onclick="generatereport({{cus.id}})" class="update_customer" > update</a>
                           
                         </td>
                     </tr>
@@ -101,5 +135,138 @@
         </div>
     </div>
 </div>
-<!-- Recent Sales End -->
+{% block script %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+    
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+    
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    
+                    break;
+                }
+            }
+        }
+    
+        return cookieValue;
+    };
+function generatereport(a){
+    $("#staticBackdrop").modal('toggle')
+    var user = a;
+    console.log(user)
+        var output = ""
+        let csr = getCookie("csrftoken")  ;
+        var status = $('#id_status').find(':selected').val();
+        var cred = {
+            "user": user,}
+        
+        
+            
+        $.ajax({
+            method: 'POST',
+            url: '{% url "report_gen" %}',
+            dataType: "json",
+            headers: { "X-CSRFToken": csr, },
+            data: cred,
+            beforesend: function () {
+                $("#py-up").show()
+            },
+            success: function (response) {
+
+                if (response.msg == "scccess") {
+                    $("#x_payment").modal('toggle');
+                    $.notify("Data has been made ", "success");
+                    var list = response.data;
+                    var full_name = list[0]["full_name"];
+                    var email = list[0]["email"];
+                    var location = list[0]["location"];
+                    var phone_number = list[0]["phone_number"];
+                    var passport_id_number = list[0]["passport_id_number"];
+                    var tel_fax = list[0]["tel_fax"];
+                    var traval_agent = list[0]["traval_agent"];
+                    var main_id = list[0]["main_id"];
+                    var check_in = list[0]["check_in"];
+                    var check_out = list[0]["check_out"];
+
+                    $("#basic_acc").html(`
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <img class="rounded-circle flex-shrink-0" src="${window.location.origin+"/media" +"/"+ main_id}" alt="" style="width: 40px; height: 40px;">
+                        <div class="w-100 ms-3">
+                            <div class="d-flex w-100 justify-content-center">
+                                <h6 class="mb-0">Full Name: ${full_name}</h6>
+                                <small>Email :${email} </small>
+                                <small>location :${location} </small>
+                            </div>
+                            <div class="d-flex w-100 justify-content-center">
+                                <h6 class="mb-0">Phone number: ${phone_number}</h6>
+                                <small>passport_id_number :${passport_id_number} </small>
+                                <small>traval_agent :${traval_agent} </small>
+                            </div>
+                            <div class="d-flex w-100 justify-content-center">
+                                <h6 class="mb-0">check in: ${check_in}</h6>
+                                <small>passport_id_number :${passport_id_number} </small>
+                                <small>checkout :${check_out} </small>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    
+                    `)
+                    console.log("this is ",response.bills)
+                   var x= response.bills
+                   console.log(x)
+                   for (var i in x){
+
+
+              
+                    output += `<div class="accordion-item bg-transparent">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="true"
+                                aria-controls="collapseOne">
+                               ${x[i]["resturent discount"]}
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show"
+                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                Gubergren justo eos magna eirmod lorem magna, amet dolores ipsum sadipscing ipsum consetetur invidunt et clita diam, vero dolor dolor est eirmod. Rebum accusam amet ipsum et. Et et lorem sanctus amet eos eos elitr ea, sanctus magna et et sed eos sit takimata sadipscing, dolor rebum sed stet vero.
+                            </div>
+                        </div>
+                    </div>`
+              
+
+                   }
+                $("#accordionExample").html(output)
+                } 
+                
+                else {
+                    $.notify("Status cant made !", "alert");
+                }
+
+            },
+            complete: function () {
+                console.log("done")
+                
+                $("#py-up").hide()
+
+            }
+
+        });
+    }   
+
+
+</script>
+
+
+{% endblock script %}
+
 {% endblock %} 

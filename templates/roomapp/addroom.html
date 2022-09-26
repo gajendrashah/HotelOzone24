@@ -63,7 +63,7 @@
                      <td>{{rooms.price_pernight}}</td>
                      <td>{{rooms.status}}</td>
                     
-                        <td><a class="btn btn-sm btn-warning m-2" href="">Change </a><a class="btn btn-sm btn-primary " href=""> Status</a></td>
+                        <td><a class="btn btn-sm btn-warning m-2" href="">Change </a><a class="btn btn-sm btn-primary " href="{% url 'room_delete' rooms.id %}"> Delete</a></td>
                     </tr>
                     {% endfor %}  
                 </tbody>

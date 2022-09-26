@@ -9,11 +9,11 @@ class RoomCreationForm(forms.Form):
 
 class ReservationCreationForm(forms.ModelForm):
     room = forms.ModelMultipleChoiceField(queryset=Room.objects.filter(status="available"))
-    Child = forms.CharField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),)
-    male_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),)
-    female_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),)
-    Other_gender = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),)
-    number_of_days = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),)
+    Child = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
+    male_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
+    female_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
+    Other_gender = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
+    number_of_days = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
     class Meta:
         model = Customer
         fields = "__all__"
@@ -40,16 +40,17 @@ class ReservationCreationForm(forms.ModelForm):
 class CustomerCretionForm(forms.ModelForm):
     
     # room = forms.ModelMultipleChoiceField(queryset=Room.objects.filter(status="available"))
-    main_additional_id = forms.FileField( widget=forms.FileInput(attrs={"class":"form-control mt-2",'multiple': True}))
+    main_additional_id = forms.FileField( widget=forms.FileInput(attrs={"class":"form-control mt-2",'multiple': True}),required=False)
 
-    Child = forms.CharField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),)
-    male_number = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),)
-    female_number = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),)
-    Other_gender = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),)
+    Child = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),required=False)
+    male_number = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),required=False)
+    female_number = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),required=False)
+    Other_gender = forms.IntegerField( widget=forms.TextInput(attrs={"class":"form-control mt-2"}),required=False)
     class Meta:
         model = Customer
         fields = "__all__"
         exclude = ["qr_code","check_in","check_out"]
+        required =["phone_number"]
         widgets ={
         "full_name" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "user" : forms.HiddenInput(attrs={"class":"form-control mt-2"}),
@@ -57,7 +58,7 @@ class CustomerCretionForm(forms.ModelForm):
         "organization" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "designation" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "passport_id_number" : forms.TextInput(attrs={"class":"form-control mt-2"}),
-        "phone_number" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "phone_number" : forms.NumberInput(attrs={"class":"form-control mt-2"},),
         "tel_fax" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "traval_agent" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "nationality" : forms.TextInput(attrs={"class":"form-control mt-2"}),
@@ -90,6 +91,15 @@ class BookedAccountupdateForm(forms.ModelForm):
         fields="__all__"
         exclude = ["status","customer_details","number_of_days"]
 
+        widgets ={
+        "room_id" : forms.SelectMultiple(attrs={"class":"form-control mt-2"}),
+        "main_id" : forms.FileInput(attrs={"class":"form-control "}),
+        "check_in" : forms.DateInput(attrs={"class":"form-control",}),
+        "child":forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "male_number":forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "female_number":forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        "other_gender":forms.NumberInput(attrs={"class":"form-control mt-2"}),
+        }
 
 class CustomerCretionForm1(forms.ModelForm):
     
@@ -167,20 +177,12 @@ class Non_room_OrderCreationForm(forms.ModelForm):
         }
 
 
-class RoomUpdateForm(forms.ModelForm):
-    class Meta:
-        model= Room
-        fields = ["status",]
+class RoomUpdateForm(forms.Form):
+    room_status = (
+        ("available", "available"),
+        ("cleaning", "cleaning"),
+        ("maintenance", "maintenance"),)
+    status = forms.ChoiceField(choices=room_status)
 
 
-        widgets ={
-        "room_name" : forms.TextInput(attrs={"class":"form-control mt-2"}),
-        "room_number" : forms.TextInput(attrs={"class":"form-control mt-2"}),
-        "group" : forms.Select(attrs={"class":"form-control mt-2"}),
-        "room_type" : forms.TextInput(attrs={"class":"form-control mt-2"}),
-        "price_pernight" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
-        "status" : forms.Select(attrs={"class":"form-control mt-2"}),
-        "room_image" : forms.FileInput(attrs={"class":"form-control mt-2"}),
-        
- 
-        }
+       

@@ -15,14 +15,14 @@ def random_user_generator(size=3, chars=string.ascii_lowercase + string.digits):
 # Create your models here.
 
 class Customer(models.Model):
-    full_name = models.CharField(max_length=255,blank=True)
+    full_name = models.CharField(max_length=255,blank=False)
     user = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=False)    
     organization = models.CharField(max_length=255,null=True,blank=True)
-    email = models.EmailField(max_length=255,null=True,blank=True)
+    email = models.EmailField(max_length=255,null=True,blank=False)
     designation = models.CharField(max_length=255,blank=True)
     passport_id_number = models.CharField(max_length=255,blank=True)
     location = models.CharField(max_length=255,blank=True)
-    phone_number = models.IntegerField(blank=True, help_text='Contact phone number')
+    phone_number = models.IntegerField(blank=False, help_text='Contact phone number',null=True)
     nationality = models.CharField(max_length=155,blank=True)
     tel_fax = models.CharField(max_length=255,blank=True)
     traval_agent = models.CharField(max_length=255,blank=True)
@@ -30,7 +30,7 @@ class Customer(models.Model):
     booked_by = models.CharField(max_length=255,blank=True)
     check_in = models.DateTimeField(auto_now=False,null=True)
     check_out = models.DateTimeField(auto_now=False,null=True)
-    main_id = models.ImageField(upload_to="customer/id",null=True)
+    main_id = models.ImageField(upload_to="customer/id",null=True,blank=True)
 
 
 
@@ -79,12 +79,12 @@ class Room(models.Model):
 class Booked(models.Model):
     customer_details = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
     room_id = models.ManyToManyField(Room, blank=True)
-    number_of_days = models.IntegerField(default=0)
+    number_of_days = models.IntegerField(default=0,null=True ,blank=True)
     booked_date = models.DateTimeField(auto_now_add=True,null=True)
-    child = models.IntegerField(default=0,null=True)
-    male_number = models.IntegerField(default=0,null=True)
-    female_number = models.IntegerField(default=0,null=True)
-    other_gender = models.IntegerField(default=0,null=True)
+    child = models.IntegerField(default=0,null=True,blank=True)
+    male_number = models.IntegerField(default=0,null=True,blank=True)
+    female_number = models.IntegerField(default=0,null=True,blank=True)
+    other_gender = models.IntegerField(default=0,null=True,blank=True)
     status = models.BooleanField(default=False)
     class Meta:
         ordering =["-booked_date"]
