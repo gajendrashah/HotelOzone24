@@ -8,7 +8,7 @@ urlpatterns = [
     path("get_user/",views.get_user,name="get_user"),
 
     path('checkin/', views.checkin, name='checkin'),
-    path('checkin_edit/<int:pk>', views.checkin_edit, name='checkin_edit'),
+    path('checkin_edit/<int:pk>/', views.checkin_edit, name='checkin_edit'),
     path('checkout/', views.checkout, name='checkout'),
     path('addroom/', views.addroom, name='addroom'),
     path('reserveroom/', views.reserveroom, name='reserveroom'),
@@ -16,8 +16,9 @@ urlpatterns = [
     path('reservation_checkin/', views.reservation_checkin, name='reservation_checkin'),
     path('reservation_cancle/', views.reservation_cancle, name='reservation_cancle'),
     path('roommanager/', views.roommanager, name='roommanager'),
-    path("room_update/<str:pk>/",views.room_update,name="room_update"),
+    path("room_update/",views.room_update,name="room_update"),
     path("room_delete/<str:pk>/",views.room_delete,name="room_delete"),
+    path("report_gen/",views.report_gen,name="report_gen"),
 
 
     path('report/', views.customerdetail, name='report'),

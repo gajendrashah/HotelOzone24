@@ -49,7 +49,7 @@ def get_user(request):
 @login_required(login_url="signin")
 def checkin(request):
     form = CustomerCretionForm
-    customer_list = Customer_list.objects.filter(status=True)
+    customer_list = Customer_list.objects.filter(status=True).order_by("-bookd_roooms__booked_date")
     if request.method == "POST":
         rooms = request.POST.getlist("id_room")
         main_id_add= request.FILES.getlist("main_additional_id")
@@ -335,9 +335,9 @@ def reservation_edit(request,pk):
             female_number = form.cleaned_data.get("female_number")
             other_gender = form.cleaned_data.get("Other_gender")
             number_of_days = form.cleaned_data.get("number_of_days")
-
+            
             Bks = Booked.objects.get(customer_details_id=data.pk)
-            Bks.child= child
+            Bks.child= int(child)
             Bks.male_number = male_number
             Bks.female_number = female_number
             Bks.other_gender = other_gender
@@ -397,6 +397,7 @@ def reservation_cancle(request):
 
 @login_required(login_url="signin")
 def roommanager(request):
+    form = RoomUpdateForm
     rooms= Room.objects.all().exclude(status__in=["cleaning","maintenance"])
     rooms_mainc= Room.objects.all().filter(status__in=["cleaning","maintenance"])
     if request.method == "POST":
@@ -426,23 +427,20 @@ def roommanager(request):
 
 
 
-    context = {"allrooms":rooms,"rooms_mainc":rooms_mainc}
+    context = {"allrooms":rooms,"rooms_mainc":rooms_mainc,"form":form}
     return render(request, 'roomapp/room_manager.html',context)
 
 
-def room_update(request,pk):
-    r = get_object_or_404(Room,id=pk)
-    form = RoomUpdateForm(instance=r)
-    if request.method == 'POST':
-        form = RoomUpdateForm(request.POST,instance=r)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Room update successfully" )
-            return redirect('roommanager')
-        else:        
-            messages.error(request, "Order Cant made" )
-            return redirect('room_update',pk=pk)
-
+def room_update(request):
+    form = RoomUpdateForm()
+    
+    if request.method =="POST":
+        r_id = request.POST.get("room_id")
+        status = request.POST.get("status")
+        room_id = Room.objects.get(id=r_id)
+        room_id.status = status
+        room_id.save()
+        return JsonResponse({"msg":"room updated"},safe=False)
 
    
     context = {'form':form}
@@ -452,7 +450,7 @@ def room_delete(request,pk):
     customer = get_object_or_404(Room,id=pk)
     customer.delete()
     messages.success(request, "Room Delete successfully" )
-    return redirect('roomdetails')
+    return redirect('addroom')
 
 def customerdetail(request):
     cust = Customer.objects.all()
@@ -648,3 +646,30 @@ def edit_room(request):
 
     context ={"form":form}
     return render(request,"update_room.html",context)
+
+
+
+
+def report_gen(request):
+    if request.POST:
+        # print(request.POST)
+        amt_pay = 0;
+        user_id = request.POST.get("user")
+        cus = Customer.objects.filter(id=user_id).values()
+        a = Customer.objects.get(id=user_id)
+        x = Ch_out.objects.filter(customer=a)
+        data = []
+        for i in x:
+
+          
+            data.append({"resturent discount":i.resturent_dic,"room discount":i.room_dic,"remaing balance":i.rem_bln})
+            amt_pay +=i.rem_bln
+        r = Booked.objects.filter(customer_details=a)
+        print("r",r)
+        for i in r:
+            z = i.room_id.all()
+            for l in z:
+                data.append({"room id ":l.room_number})
+        data.append({"amt_pay":amt_pay})
+        print(data)
+        return JsonResponse({"data":list(cus),"bills":data,"msg":"scccess"},safe=False)
