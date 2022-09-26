@@ -6,7 +6,7 @@
 
   
   <!-- Modal -->
-  <div class="modal fade bd-example-modal-lg"  id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade "  id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -16,8 +16,7 @@
             <span id="prev_restu_disc" class=" mx-3 badge  badge-lg  badge-outline-success h5"></span>
 
 
-            <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="background-color:black">
             {% include "roomapp/check_out.html" %}

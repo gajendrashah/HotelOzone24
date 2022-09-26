@@ -665,11 +665,9 @@ def report_gen(request):
             data.append({"resturent discount":i.resturent_dic,"room discount":i.room_dic,"remaing balance":i.rem_bln})
             amt_pay +=i.rem_bln
         r = Booked.objects.filter(customer_details=a)
-        print("r",r)
         for i in r:
             z = i.room_id.all()
             for l in z:
                 data.append({"room id ":l.room_number})
         data.append({"amt_pay":amt_pay})
-        print(data)
         return JsonResponse({"data":list(cus),"bills":data,"msg":"scccess"},safe=False)
