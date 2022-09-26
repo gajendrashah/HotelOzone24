@@ -1,6 +1,4 @@
-from datetime import date, timedelta
-import json
-from multiprocessing import context
+from datetime import date
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
