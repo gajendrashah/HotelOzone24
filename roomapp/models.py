@@ -1,7 +1,7 @@
 from django.db import models
 import random
 import string
-from datetime import date, datetime,timedelta
+from datetime import date,timedelta
 
 
 
