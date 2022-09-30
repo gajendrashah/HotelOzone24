@@ -132,7 +132,7 @@ class Advance_payment(models.Model):
     remarks = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-        return self.remarks
+        return self.customer.full_name
 
 
 class Customer_list(models.Model):
@@ -151,7 +151,7 @@ class Customer_list(models.Model):
     def total_amount(self):
         total_amt = 0.0
         data = Advance_payment.objects.filter(customer=self.customer.id)
-        # print("this is data:",data)
+        print("this is data:",data)
         for d in data:
             total_amt += float(d.Advance_amount)
         if total_amt == 0.0:
