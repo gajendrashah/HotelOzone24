@@ -46,6 +46,7 @@ def get_user(request):
 
 @login_required(login_url="signin")
 def checkin(request):
+    ad_form = Advance_paymentForm()
     form = CustomerCretionForm
     customer_list = Customer_list.objects.filter(status=True).order_by("-bookd_roooms__booked_date")
     if request.method == "POST":
@@ -106,7 +107,7 @@ def checkin(request):
         # print(room)
         return JsonResponse(list(room),safe=False)
 
-    context={"customer_list":customer_list,"form":form}
+    context={"customer_list":customer_list,"form":form,"form2":ad_form}
     return render(request, 'roomapp/checkin.html',context)
 
 def checkin_edit(request,pk):
@@ -172,6 +173,7 @@ def check_out(request):
         if pk != "":
             user = Customer.objects.get(id=pk)
             rooms = Customer_list.objects.filter(customer=user).last()
+            print(rooms)
             room_cost = rooms.room_cost
             res_cost = rooms.total_resturent_amount
             advance_amt = rooms.total_amount
@@ -206,6 +208,8 @@ def check_out_process(request):
     remarks = request.POST.get("remarks")
     remaing_amt = request.POST.get("remaing_amt")
 
+    print(request.POST)
+
     if user_id != "" and room_discount != "" and room_discount !="" and vat != "" and remaing_amt != "":
     
         cus = Customer.objects.get(id = user_id)
@@ -216,11 +220,12 @@ def check_out_process(request):
 
         )
         obj.save()
-        ad = Advance_payment.objects.filter(customer=cus).first()
-        print(ad)
+        ad = Advance_payment.objects.filter(customer=cus)
+        print("this is ad",ad)
         if ad is not None:
-            ad.Advance_amount = 0
-            ad.save()
+            for i in ad:
+                i.Advance_amount = 0
+                i.save()
         else:
             pass
         deactive = Customer_list.objects.filter(customer=cus,status=True).first()
