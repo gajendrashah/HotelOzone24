@@ -134,7 +134,6 @@ def checkout(request):
    
    
     
-    form = Advance_paymentForm()
     if request.method == "POST":
                 
         user_id = request.POST.get("user")
@@ -161,7 +160,7 @@ def checkout(request):
         
         return JsonResponse(list(room),safe=False)
 
-    context = {"customer_list":customer_list,"form":form}
+    context = {"customer_list":customer_list}
 
 
     return render(request, 'roomapp/checkout.html',context)
