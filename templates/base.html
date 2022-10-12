@@ -189,23 +189,27 @@
                   data:{"user":ui.item.value},
                   success:function(data){
                     console.log(data)
-                    console.log(data[0]["main_id"])
-                    $("#id_full_name").val(data[0]["full_name"])
-                    $("#id_user").val(data[0]["user"])
-                    $("#id_organization").val(data[0]['organization'])
-                    $("#id_designation").val(data[0]['designation'])
-                    $("#id_passport_id_number").val(data[0]['passport_id_number'])
-                    $("#id_location").val(data[0]['location'])
-                    $("#id_phone_number").val(data[0]['phone_number'])
-                    $("#id_nationality").val(data[0]['nationality'])
-                    $("#id_tel_fax").val(data[0]['tel_fax'])
-                    $("#id_traval_agent").val(data[0]['traval_agent'])
-                    $("#id_bill_setteled_by").val(data[0]['bill_setteled_by'])
-                    $("#id_booked_by").val(data[0]['booked_by'])
-                    var url = data[0]['main_id']
-            img.src = url;
-            var src = document.getElementById("main_id");
-            src.appendChild(img);
+                    $("#id_full_name").val(data["customer"][0]["full_name"])
+                    $("#id_user").val(data["customer"][0]["user"])
+                    $("#id_organization").val(data["customer"][0]['organization'])
+                    $("#id_designation").val(data["customer"][0]['designation'])
+                    $("#id_passport_id_number").val(data["customer"][0]['passport_id_number'])
+                    $("#id_location").val(data["customer"][0]['location'])
+                    $("#id_phone_number").val(data["customer"][0]['phone_number'])
+                    $("#id_nationality").val(data["customer"][0]['nationality'])
+                    $("#id_tel_fax").val(data["customer"][0]['tel_fax'])
+                    $("#id_traval_agent").val(data["customer"][0]['traval_agent'])
+                    $("#id_bill_setteled_by").val(data["customer"][0]['bill_setteled_by'])
+                    $("#id_booked_by").val(data["customer"][0]['booked_by'])
+                    
+
+                    if (data["romms"] != null ){
+                        $("#prev_room").html(data["romms"])
+                    };
+
+                    if (data["room_disc"] != null){
+                        $("#prev_room_disc").html(data["room_disc"])
+                    };
                
                 }
                   

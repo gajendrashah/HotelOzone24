@@ -18,7 +18,7 @@ class Customer(models.Model):
     full_name = models.CharField(max_length=255,blank=False)
     user = models.CharField(max_length=255,default = (f'#{random_string_generator()}').upper(),unique=False)    
     organization = models.CharField(max_length=255,null=True,blank=True)
-    email = models.EmailField(max_length=255,null=True,blank=False)
+    email = models.EmailField(max_length=255,null=True,blank=True)
     designation = models.CharField(max_length=255,blank=True)
     passport_id_number = models.CharField(max_length=255,blank=True)
     location = models.CharField(max_length=255,blank=True)
@@ -27,10 +27,10 @@ class Customer(models.Model):
     # tel_fax = models.CharField(max_length=255,blank=True)
     traval_agent = models.CharField(max_length=255,blank=True)
     bill_setteled_by = models.CharField(max_length=255,blank=True)
-    booked_by = models.CharField(max_length=255,blank=True)
+    booked_by = models.CharField(max_length=255,blank=False)
     check_in = models.DateTimeField(auto_now=False,null=True)
     check_out = models.DateTimeField(auto_now=False,null=True)
-    main_id = models.ImageField(upload_to="customer/id",null=True,blank=True)
+    main_id = models.ImageField(upload_to="customer/id",null=True,blank=False)
 
 
 

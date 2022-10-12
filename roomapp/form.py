@@ -50,7 +50,7 @@ class CustomerCretionForm(forms.ModelForm):
         model = Customer
         fields = "__all__"
         exclude = ["qr_code","check_in","check_out"]
-        required =["phone_number"]
+        required =["phone_number","room"]
         widgets ={
         "full_name" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "user" : forms.HiddenInput(attrs={"class":"form-control mt-2"}),
@@ -65,7 +65,7 @@ class CustomerCretionForm(forms.ModelForm):
         "location" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "bill_setteled_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "booked_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
-        "room" : forms.SelectMultiple(attrs={"class":"form-control mt-2"}),
+        "room" : forms.SelectMultiple(attrs={"class":"form-control mt-2"},),
         "main_id" : forms.FileInput(attrs={"class":"form-control "}),
         "main_additional_id" : forms.ClearableFileInput(attrs={"class":"form-control input-group-prepend",'multiple': True}),
         
