@@ -90,8 +90,11 @@
 
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary rounded h-100 p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-4" id="data-rooms">
             <h6 class="mb-0">Check In Customer</h6>
+        
+            <h6 class="mb-0" id = "prev_room">Previous Room  </h6>
+            <h6 class="mb-0" id = "prev_room_disc">Prevvious room discount</h6>
         <button type="button" id="clear_form" class="btn btn-warning rounded-pill m-2">Clear</button>
         </div>
 
@@ -140,14 +143,14 @@
                     <div class="">
                         Room
                         <select type="text" name="gc-room" class="form-control mt-2" maxlength="255"
-                            id="gc-room"></select>
+                            id="gc-room" required></select>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="">
                         Room Number
                         <select type="text" name="id_room" class="form-control mt-2" name="id_room[]"
-                            maxlength="255" id="id_room" multiple="multiple"></select>
+                            maxlength="255" id="id_room" multiple="multiple" required></select>
                     </div>
                     
                 </div>

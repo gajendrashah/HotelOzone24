@@ -12,9 +12,15 @@ from django.db.models import Q
 # Create your views here.
 @login_required(login_url="signin")
 def dashboard(request):
-    cus = Customer.objects.all().order_by("-check_in")
-    context = {"customer":cus[:5]}
+    customer_list = Customer_list.objects.filter(status=True).order_by("-bookd_roooms__booked_date")
+    ad_form = Advance_paymentForm()
+
+    cus = Customer.objects.all().order_by("-check_out",)
+    context = {"customer":cus[:5],"customer_list":customer_list,"ad_form":ad_form}
     return render(request, 'index.html',context)
+
+
+
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
@@ -41,8 +47,21 @@ def customerdata(request):
 def get_user(request):
     data = request.GET.get("user")
     customer = Customer.objects.filter(full_name__icontains=data).values()
+    user = Customer.objects.get(id=customer[0]["id"])
+    print(user,",,,,,,,,,,,")
+    room = Booked.objects.filter(customer_details=user).last()
+    room_dis = Ch_out.objects.filter(customer=user).last()
 
-    return JsonResponse(list(customer),safe=False)
+    print(room.room_id)
+    room_numbers = []
+    for i in room.room_id.all():
+        room_numbers.append(i.room_number)
+        print(i.room_number)
+    
+    # print(room.total_room)
+
+
+    return JsonResponse({"customer":list(customer),"romms":list(room_numbers),"room_disc":str(room_dis.room_discount)},safe=False)
 
 @login_required(login_url="signin")
 def checkin(request):
@@ -238,7 +257,7 @@ def check_out_process(request):
         cus.save()
         
 
-        return JsonResponse({"msg":"User Check Out sucessfully "},safe=False)
+        return redirect({"msg":"User Check Out sucessfully "},safe=False)
     else:
         JsonResponse({"msg":"Please Make sure the data will be filled correctly"},safe=False)
 

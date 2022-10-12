@@ -1,7 +1,47 @@
 {% extends "base.html "%}
 
 {% block content %}
+<div class="modal fade none-border" id="x_payment" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Pay Advance </strong></h4>
+            </div>
+            <div class="modal-body">
+                <div id="py-up">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="payform">
 
+                    {% csrf_token %}
+
+                    <div class="row">
+
+
+                        {% for field in ad_form %}
+                        <div class="col-md-6">
+
+                            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="proced_pay"
+                            class="btn btn-danger waves-effect waves-light save-category" data-dismiss="modal">Proceed
+                            To Pay</button>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</div>
             <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -45,8 +85,71 @@
       
             <!-- Sales Chart End -->
 
-
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Customer Status Managemenet </h6>
+                        <form class="d-none d-md-flex ms-4">
+                            <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr role="row">
+                                    <th>Customer Full Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Restaurant Bills</th>
+                                    <th>Rooms</th>
+                                    <th>Check In </th>
+            
+                                    <th>Action</th>
+            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cus in customer_list %}
+                                <tr class="odd" role="row">
+                                    <td class="sorting_1" id="user_id">{{cus.customer.full_name}}</td>
+            
+                                    <td>{{cus.customer.phone_number}}</td>
+            
+                                    <td>
+            
+            
+            
+                                    </td>
+            
+                                    <td> {% for r in cus.bookd_roooms.room_id.all %}
+            
+                                        <span
+                                            class="badge badge-xs badge-success">{{r.room_number|upper}}</span>
+                                        {% endfor %}
+                                    </td>
+            
+            
+                                    <td>{{cus.customer.check_in|date:"Y-m-d h : m A "}}</td>
+            
+            
+            
+                                    <td><span>
+                                        <button type="button" class="btn btn-success btn-sm"
+                                        onclick="ad_pay({{cus.customer.id}})" id="ad_pay">Pay Advance
+                                        <span class="btn-icon-start"><i class="fas fa-money-bill-wave"></i></span>
+                                    </button>
+                                          
+                                    </td>
+                                </tr>
+            
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Recent Sales Start -->
+            
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-secondary text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -97,6 +200,67 @@
             <!-- Recent Sales End -->
 
 
+       {% block scripts %}
+       
+       <script>
+
+        function ad_pay(b) {
+            $("#py-up").hide()
         
+            $('#x_payment').modal('toggle')
+            var user = b;
+        
+            let csr = $("input[name=csrfmiddlewaretoken]").val()
+        
+        
+        
+            $("#proced_pay").unbind("click").bind("click", function () {
+                var amount = $("#id_Advance_amount").val();
+                var paytype = $('#id_payment_type').find(':selected').val();
+                var remarks = $('#id_remarks').val();
+                var cred = {
+                    "user": user,
+        
+                    "ammount": amount,
+                    "paytype": paytype,
+                    "remarks": remarks
+                }
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url "checkout" %}',
+                    dataType: "json",
+                    headers: { "X-CSRFToken": csr, },
+                    data: cred,
+                    beforesend: function () {
+                        $("#py-up").show()
+                    },
+                    success: function (response) {
+        
+                        if (response.message == "success") {
+                            $("#x_payment").modal('toggle');
+                            $.notify("Payment has been made ", "success");
+        
+                        } else {
+                            $.notify("Payments cant made !", "alert");
+                        }
+        
+                    },
+                    complete: function () {
+                        console.log("done")
+                        
+                        $("#py-up").hide()
+        
+                    }
+        
+                });
+                $("#payform")[0].reset();
+        
+        
+            });
+        }
+
+       </script>
+       
+       {% endblock scripts %} 
 
 {% endblock %} 
