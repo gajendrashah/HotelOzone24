@@ -204,7 +204,15 @@
                     
 
                     if (data["romms"] != null ){
-                        $("#prev_room").html(data["romms"])
+                        var a = ''
+
+                        for( var i in data["romms"]){
+                            a+=`<span>${data["romms"][i]}</span> &nbsp`
+                        };
+                        $("#prev_room").html(a)
+
+                        
+
                     };
 
                     if (data["room_disc"] != null){
