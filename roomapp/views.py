@@ -12,9 +12,15 @@ from django.db.models import Q
 # Create your views here.
 @login_required(login_url="signin")
 def dashboard(request):
-    cus = Customer.objects.all().order_by("-check_in")
-    context = {"customer":cus[:5]}
+    customer_list = Customer_list.objects.filter(status=True).order_by("-bookd_roooms__booked_date")
+    ad_form = Advance_paymentForm()
+
+    cus = Customer.objects.all().order_by("-check_out",)
+    context = {"customer":cus[:5],"customer_list":customer_list,"ad_form":ad_form}
     return render(request, 'index.html',context)
+
+
+
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 

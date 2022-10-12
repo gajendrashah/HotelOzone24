@@ -24,7 +24,7 @@ class Customer(models.Model):
     location = models.CharField(max_length=255,blank=True)
     phone_number = models.IntegerField(blank=False, help_text='Contact phone number',null=True)
     nationality = models.CharField(max_length=155,blank=True)
-    tel_fax = models.CharField(max_length=255,blank=True)
+    # tel_fax = models.CharField(max_length=255,blank=True)
     traval_agent = models.CharField(max_length=255,blank=True)
     bill_setteled_by = models.CharField(max_length=255,blank=True)
     booked_by = models.CharField(max_length=255,blank=True)
