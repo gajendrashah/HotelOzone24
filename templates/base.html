@@ -182,13 +182,11 @@
               source: "http://localhost:8000/customerdata/",
               // minLength: 2,
               select: function( event, ui ) {
-                // console.log(ui)
                 $.ajax({
                   url:"http://localhost:8000/get_user/",
                   dataType:"json",
                   data:{"user":ui.item.value},
                   success:function(data){
-                    console.log(data)
                     $("#id_full_name").val(data["customer"][0]["full_name"])
                     $("#id_user").val(data["customer"][0]["user"])
                     $("#id_organization").val(data["customer"][0]['organization'])
@@ -249,7 +247,6 @@
             var order_id = $("#id_order_id").val();
             var room = $("#id_room").select2("data")[0]["text"];
             var total = $("#id_total").val();
-            console.log(order_id,total,room)
 
             $.ajax({
 
@@ -264,7 +261,6 @@
                 datatype: "json",
                 success:function(resp){
                     
-                 console.log(resp["msg"])
                  if (resp["msg"]=="ok"){
                     $.notify("Order Create successfully ", "success");
                     location.reload(true)

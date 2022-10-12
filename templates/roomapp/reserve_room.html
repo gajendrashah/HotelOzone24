@@ -247,12 +247,10 @@
     });
         function checkIn_pro(a){
             var a_ = a
-            console.log(a)
 
             var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             $("#save_ch").click(function(){
 
-                console.log("here i am")
 
                 if($("input[type='checkbox']").prop("checked") == true){
 
@@ -264,7 +262,6 @@
                        
                         datatype: "json",
                         success:function(resp){
-                            console.log(resp)
                             $("#exampleModal").hide()
                             location.reload(true)
                             
@@ -286,14 +283,11 @@
        
     };
  function cancel_pro(a){
-    console.log(a)
     var a_ = a
-            console.log(a)
 
             var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             $("#save_ch1").click(function(){
 
-                console.log("here i am")
 
                 if($("input[type='checkbox']").prop("checked") == true){
 
@@ -305,7 +299,6 @@
                        
                         datatype: "json",
                         success:function(resp){
-                            console.log(resp)
                             $("#exampleModal2").hide()
                             location.reload(true)
                             

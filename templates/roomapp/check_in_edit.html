@@ -115,7 +115,6 @@
         url: "{% url 'get_room_by_group' %}",
         dataType: 'json',
         processResults:function(data){
-          console.log(data)
           return{
             results:$.map(data,function(item){
               return {id:item.id,text:item.title}
@@ -128,7 +127,6 @@
     })
     gc_room.on("select2:select",function(e){
       var data = e.params.data;
-      console.log(data)
       $.ajax({
         url:"{% url 'checkin' %}",
         dataType:"json",
@@ -140,7 +138,6 @@
           room_id.select2({
             // allowClear: true,
             data:$.map(resp,function(item){
-              // console.log(item)
              return {id:item.id,text:item.room_number}
             })
           })

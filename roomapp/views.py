@@ -33,9 +33,9 @@ def customerdata(request):
     result = []
     if "term" in request.GET:
         term = request.GET.get("term")
-        print(term)
+        # print(term)
         obj = Customer.objects.filter(Q(full_name__icontains=term) | Q(phone_number__icontains=term))
-        print(obj)
+        # print(obj)
         for t in obj:
             result.append(t.id)
             result.append(t.full_name)
@@ -48,20 +48,20 @@ def get_user(request):
     data = request.GET.get("user")
     customer = Customer.objects.filter(full_name__icontains=data).values()
     user = Customer.objects.get(id=customer[0]["id"])
-    print(user,",,,,,,,,,,,")
     room = Booked.objects.filter(customer_details=user).last()
     room_dis = Ch_out.objects.filter(customer=user).last()
 
-    print(room.room_id)
     room_numbers = []
     for i in room.room_id.all():
         room_numbers.append(i.room_number)
-        print(i.room_number)
     
-    # print(room.total_room)
+    if room_dis is not None:
+        room_dis = room_dis.room_discount
+    else:
+        room_dis = 0.0
 
 
-    return JsonResponse({"customer":list(customer),"romms":list(room_numbers),"room_disc":str(room_dis.room_discount)},safe=False)
+    return JsonResponse({"customer":list(customer),"romms":list(room_numbers),"room_disc":str(room_dis)},safe=False)
 
 @login_required(login_url="signin")
 def checkin(request):
@@ -92,7 +92,7 @@ def checkin(request):
                 male_number = form.cleaned_data.get("male_number")
                 female_number = form.cleaned_data.get("female_number")
                 other_gender = form.cleaned_data.get("other_gender")
-                print("here is a id ",main_id_add)
+                # print("here is a id ",main_id_add)
                 user = Customer.objects.get(id = data.pk)
                 
                 for img in main_id_add:
@@ -186,19 +186,19 @@ def checkout(request):
 
 def check_out(request):
     if request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
         pk = request.POST.get("user")
         if pk != "":
             user = Customer.objects.get(id=pk)
             rooms = Customer_list.objects.filter(customer=user).last()
-            print(rooms)
+            # print(rooms)
             room_cost = rooms.room_cost
             res_cost = rooms.total_resturent_amount
             advance_amt = rooms.total_amount
             remaing_balance = Ch_out.objects.filter(customer=user).last()
             if remaing_balance is not None:
                 rem_blc = remaing_balance.rem_bln
-                print(rem_blc)
+                # print(rem_blc)
                 room_discount = remaing_balance.room_dic
                 resturet_discount = remaing_balance.resturent_dic
             else:
@@ -226,7 +226,7 @@ def check_out_process(request):
     remarks = request.POST.get("remarks")
     remaing_amt = request.POST.get("remaing_amt")
 
-    print(request.POST)
+    # print(request.POST)
 
     if user_id != "" and room_discount != "" and room_discount !="" and vat != "" and remaing_amt != "":
     
@@ -239,7 +239,7 @@ def check_out_process(request):
         )
         obj.save()
         ad = Advance_payment.objects.filter(customer=cus)
-        print("this is ad",ad)
+        # print("this is ad",ad)
         if ad is not None:
             for i in ad:
                 i.Advance_amount = 0
@@ -342,7 +342,7 @@ def reserveroom(request):
 def reservation_edit(request,pk):
     foo_ = Booked.objects.get(id=pk)
     cus = Customer.objects.get(id = foo_.customer_details_id)
-    print("foo",foo_)
+    # print("foo",foo_)
     form = ReservationCreationForm(instance=cus)
     room_id = request.POST.getlist("room")
     if request.method == "POST":
@@ -351,7 +351,7 @@ def reservation_edit(request,pk):
             data= form.save(commit=False)
 
             child = form.cleaned_data.get("Child")
-            print("Child",child)
+            # print("Child",child)
             male_number = form.cleaned_data.get("male_number")
             female_number = form.cleaned_data.get("female_number")
             other_gender = form.cleaned_data.get("Other_gender")
@@ -475,7 +475,7 @@ def room_delete(request,pk):
 
 def customerdetail(request):
     cust = Customer.objects.all()
-    print(len(cust))
+    # print(len(cust))
 
     context={"customer":cust}
     return render(request, 'roomapp/report.html',context)
@@ -492,11 +492,11 @@ def with_room(request):
             order_id = request.POST.get("order_id")
             total = request.POST.get("total")
             # cus = Order.objects.filter(room=room_id)
-            print(room_id,order_id,total)
+            # print(room_id,order_id,total)
 
             # form = OrderCreationForm(request.POST)
             r = Room.objects.get(room_number=room_id) #room id
-            print(r.id)
+            # print(r.id)
             c = Booked.objects.filter(room_id__id=r.id).values()
 
             c_id= c[0]["customer_details_id"]
@@ -557,7 +557,7 @@ def with_out_room(request):
 
 def with_out_room_update(request,pk):
     order = get_object_or_404(Non_room_user,id=pk)
-    print(order)
+    # print(order)
     form = Non_room_OrderCreationForm(instance=order)
     if request.method == 'POST':
         form = Non_room_OrderCreationForm(request.POST,instance=order)
@@ -605,7 +605,7 @@ def user_signup(request):
             password1 = request.POST['password1']
             password2 = request.POST['password2']  
 
-            print("here we are")
+            # print("here we are")
             if password1==password2:
                 if User.objects.filter(username=username).exists():
                     messages.info(request,'Username already taken')
@@ -677,6 +677,7 @@ def report_gen(request):
         amt_pay = 0;
         user_id = request.POST.get("user")
         cus = Customer.objects.filter(id=user_id).values()
+        print(cus)
         a = Customer.objects.get(id=user_id)
         x = Ch_out.objects.filter(customer=a)
         data = []

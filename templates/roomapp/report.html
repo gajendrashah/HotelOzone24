@@ -178,7 +178,7 @@ function generatereport(a){
                 $("#py-up").show()
             },
             success: function (response) {
-
+                console.log(response.data)
                 if (response.msg == "scccess") {
                     $("#x_payment").modal('toggle');
                     $.notify("Data has been made ", "success");
@@ -232,6 +232,7 @@ function generatereport(a){
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true"
                                 aria-controls="collapseOne">
+                                <p> Check in date : ${x[i]}</p>
                                ${x[i]["resturent discount"]}
                             </button>
                         </h2>

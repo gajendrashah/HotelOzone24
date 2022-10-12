@@ -34,7 +34,6 @@
 
             },
             complete: function () {
-                console.log("done")
                 $("#py-up").hide()
 
             }
@@ -133,7 +132,6 @@ output += $("#calc-details").html(inner_data)
                 headers: { "X-CSRFToken": csr, },
                 data: data,
                 success: function (resp) {
-                    console.log(resp)
                     if (resp.msg = "User Check Out sucessfully"){
                         $("#staticBackdrop").modal('toggle');
                         $.notify("User checkout successfully ", "success");
