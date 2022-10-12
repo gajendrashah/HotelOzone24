@@ -140,6 +140,7 @@ class Customer_list(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     status = models.BooleanField(default=True)
     # advance = models.ManyToManyField(Advance_payment,blank=True,null=True)
+    checkin = models.DateTimeField(auto_now_add= True,null=True)
     checkout = models.CharField(max_length=255, default="stay")
     bookd_roooms = models.ForeignKey(
         Booked, on_delete=models.CASCADE, blank=True, null=True)
