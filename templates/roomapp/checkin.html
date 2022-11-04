@@ -2,7 +2,29 @@
 {% block content %}  
 <!-- Sale & Revenue Start -->
 
+<!-- Button trigger modal -->
 
+  <!-- Modal -->
+  <div class="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="exampleModalLabel">Summery </h5>
+          
+        </div>
+        <div class="modal-body">
+            <div id="cus_details">
+            </div>
+            <div class="img_preview">
+                <img id="file-ip-1-preview">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="preview()" >Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="modal fade none-border" id="x_payment" >
     <div class="modal-dialog" role="document">
@@ -124,9 +146,13 @@
             {% endfor %}
         
             {% endif %}
+
             <form  id = "configform" action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="row">
+                 <div class="row updated_form">
+
+                
+
                     {% for fields in form.visible_fields %}
                     <div class="col-6">
                         {{ fields.errors }}
@@ -138,7 +164,9 @@
                         {% for field in form.hidden_fields %}
                         <div style="display:none;">{{ field }}</div>
                         {% endfor %}
+                    </div>
                 </div>
+                <div class="row">
                 <div class="col-6">
                     <div class="">
                         Room
@@ -154,16 +182,18 @@
                     </div>
                     
                 </div>
-               
                 <button type="submit" class="btn btn-warning rounded-pill m-2">Save</button>
 
-            </form>
-           
-        
-        <div class="row">
-            <button type="button" class="btn btn-primary rounded-pill m-2">Preview</button>
+            </div>
+        </form>
+            <div class="row">
+                <button  onclick="preview()" type="button" class="btn btn-primary">
+                   Preview
+                  </button>
+                       
         </div>
-    </div>
+
+      
 </div>
 
 <!-- Recent Sales Start -->
@@ -336,7 +366,48 @@ function ad_pay(b) {
 
 
     });
+
+
 }
+
+function preview(){
+    $('#preview').modal('toggle')
+     var full_name =   $("#id_full_name").val();
+     var user_id=   $("#id_user").val();
+     var organization =   $("#id_organization").val();
+     var designation =   $("#id_designation").val();
+     var passport_id_number=   $("#id_passport_id_number").val();
+     var location=   $("#id_location").val();
+     var phone_number=   $("#id_phone_number").val();
+    var nationality =    $("#id_nationality").val();
+     var tel_fax=   $("#id_tel_fax").val();
+     var traval_agent=   $("#id_traval_agent").val();
+      var bill_setteled_by =  $("#id_bill_setteled_by").val();
+      var booked_by = $("#id_booked_by").val();
+      var remarks=  $("#id_remarks").val();
+    //var image_url = $("#id_main_id").wrap(`<span class="mt-3" >${data["customer"][0]['main_id']}</span>`)
+    $("#cus_details").html(
+        
+    `Full Name : ${full_name} <br>
+     Organization: ${organization}<br>
+     designation: ${designation}<br>
+     passport_id_number: ${passport_id_number}<br>
+     phone_number: ${phone_number}<br>
+     nationality: ${nationality}<br>
+     tel_fax: ${tel_fax}<br>
+     traval_agent: ${traval_agent}<br>
+     bill_setteled_by: ${bill_setteled_by}<br>
+     booked_by: ${booked_by}<br>
+     remarks: ${remarks}<br>
+
+     `
+    
+
+    )
+  
+
+}
+
 
 
 </script>

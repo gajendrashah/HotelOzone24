@@ -136,11 +136,7 @@ output += $("#calc-details").html(inner_data)
                         $("#staticBackdrop").modal('toggle');
                         $.notify("User checkout successfully ", "success");
 
-                        setTimeout(function () {
-                           
-                            location.reload(true);
-                          }, 1000);
-                        
+                        window.location.replace(base_url)
                        
                         
                     }else{

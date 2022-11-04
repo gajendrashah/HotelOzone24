@@ -118,7 +118,7 @@
             <div class="alert alert-{{ message.tags }} ">{{ message }}.</div>
            {% endfor %}
             {% endif %}
-        <form id= "configform"action="" method="POST" enctype="multipart/form-data">
+        <form id= "configform" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
         <div class="row">
             {% if form.errors %}

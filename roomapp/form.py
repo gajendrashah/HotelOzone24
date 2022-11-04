@@ -1,10 +1,23 @@
 from django import forms
 from .models import *
-class RoomCreationForm(forms.Form):
-    initial_number = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
-    final_number  = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
-    room_name = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
-    price = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
+# class RoomCreationForm(forms.Form):
+#     initial_number = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
+#     final_number  = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
+#     room_name = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
+#     price = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control mt-2"}))
+
+
+class RoomCreationForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = "__all__"
+
+        widgets ={
+             "room_number" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+             "price_pernight" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
+             "group" : forms.Select(attrs={"class":"form-control mt-2"}),
+             "status" : forms.Select(attrs={"class":"form-control mt-2"})
+        }
 
 
 class ReservationCreationForm(forms.ModelForm):
@@ -13,7 +26,6 @@ class ReservationCreationForm(forms.ModelForm):
     male_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
     female_number = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
     Other_gender = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
-    number_of_days = forms.IntegerField( widget=forms.NumberInput(attrs={"class":"form-control mt-2"}),required=False)
     class Meta:
         model = Customer
         fields = "__all__"
@@ -25,14 +37,14 @@ class ReservationCreationForm(forms.ModelForm):
         "designation" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "passport_id_number" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "phone_number" : forms.NumberInput(attrs={"class":"form-control mt-2"}),
-        "tel_fax" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "remarks" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "traval_agent" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "nationality" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "location" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "bill_setteled_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "booked_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "room" : forms.SelectMultiple(attrs={"class":"form-control mt-2"}),
-        "main_id" : forms.FileInput(attrs={"class":"form-control "}),
+        "main_id" : forms.FileInput(attrs={"class":"form-control ",'onclick': 'showPreview(event)'},),
         "check_in" : forms.DateInput(attrs={"class":"form-control",}),
  
         }
@@ -59,14 +71,14 @@ class CustomerCretionForm(forms.ModelForm):
         "designation" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "passport_id_number" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "phone_number" : forms.NumberInput(attrs={"class":"form-control mt-2"},),
-        "tel_fax" : forms.TextInput(attrs={"class":"form-control mt-2"}),
+        "remarks" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "traval_agent" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "nationality" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "location" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "bill_setteled_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "booked_by" : forms.TextInput(attrs={"class":"form-control mt-2"}),
         "room" : forms.SelectMultiple(attrs={"class":"form-control mt-2"},),
-        "main_id" : forms.FileInput(attrs={"class":"form-control "}),
+        "main_id" : forms.FileInput(attrs={"class":"form-control",'onclick':'showPreview(event)'}),
         "main_additional_id" : forms.ClearableFileInput(attrs={"class":"form-control input-group-prepend",'multiple': True}),
         
  

@@ -24,16 +24,16 @@ class Customer(models.Model):
     location = models.CharField(max_length=255,blank=True)
     phone_number = models.IntegerField(blank=False, help_text='Contact phone number',null=True)
     nationality = models.CharField(max_length=155,blank=True)
-    # tel_fax = models.CharField(max_length=255,blank=True)
+    remarks = models.CharField(max_length=255,blank=True)
     traval_agent = models.CharField(max_length=255,blank=True)
     bill_setteled_by = models.CharField(max_length=255,blank=True)
     booked_by = models.CharField(max_length=255,blank=False)
     check_in = models.DateTimeField(auto_now=False,null=True)
     check_out = models.DateTimeField(auto_now=False,null=True)
-    main_id = models.ImageField(upload_to="customer/id",null=True,blank=False)
+    main_id = models.ImageField(upload_to="customer/id",null=True,blank=True)
 
 
-
+    
   
     
     def format_date(obj):
@@ -69,8 +69,7 @@ class Room(models.Model):
     group = models.ForeignKey(Grouped_room,on_delete=models.CASCADE,blank=True)
     price_pernight = models.CharField(max_length=255)
     status = models.CharField(max_length=255, choices=room_status, default="available")
-    intital_number = models.IntegerField(default=0)
-    final_number = models.IntegerField(default=0)
+    
 
     def __str__(self):
         return f"{self.room_number}"
