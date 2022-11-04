@@ -8,7 +8,7 @@ from django.http import Http404,JsonResponse
 from roomapp.form import Advance_paymentForm, BookedAccountupdateForm, CustomerCretionForm, CustomerCretionForm1, Non_room_OrderCreationForm, Order_creation_Non_room_user, OrderCreationForm, ReservationCreationForm, RoomCreationForm, RoomUpdateForm
 from roomapp.models import Additional_id, Advance_payment, Booked, Ch_out, Customer, Customer_list, Grouped_room, Non_room_user, Order, Room
 from django.db.models import Q
-
+from django.template.loader import render_to_string
 # Create your views here.
 @login_required(login_url="signin")
 def dashboard(request):
@@ -50,6 +50,8 @@ def get_user(request):
     user = Customer.objects.get(id=customer[0]["id"])
     room = Booked.objects.filter(customer_details=user).last()
     room_dis = Ch_out.objects.filter(customer=user).last()
+    form = CustomerCretionForm(instance=user)
+
 
     room_numbers = []
     for i in room.room_id.all():
@@ -59,9 +61,11 @@ def get_user(request):
         room_dis = room_dis.room_discount
     else:
         room_dis = 0.0
+    data = render_to_string("pages/checkin_exist_user.html",{"form":form})
 
-
-    return JsonResponse({"customer":list(customer),"romms":list(room_numbers),"room_disc":str(room_dis)},safe=False)
+    return JsonResponse({
+        "form_value":data,
+        "customer":list(customer),"romms":list(room_numbers),"room_disc":str(room_dis)},safe=False)
 
 @login_required(login_url="signin")
 def checkin(request):
@@ -219,6 +223,7 @@ def check_out_process(request):
     if request.method != "POST":
         raise Http404
     
+
     user_id = request.POST.get("user")
     room_discount = request.POST.get("room_discount")
     resturent_discount = request.POST.get("resturent_discount")
@@ -228,7 +233,7 @@ def check_out_process(request):
 
     # print(request.POST)
 
-    if user_id != "" and room_discount != "" and room_discount !="" and vat != "" and remaing_amt != "":
+    if user_id != "" :
     
         cus = Customer.objects.get(id = user_id)
         # user = Customer_list.objects.filter(customer=cus,status=True)
@@ -257,9 +262,9 @@ def check_out_process(request):
         cus.save()
         
 
-        return redirect({"msg":"User Check Out sucessfully "},safe=False)
+        return JsonResponse({"msg":"User Check Out sucessfully "},safe=False)
     else:
-        JsonResponse({"msg":"Please Make sure the data will be filled correctly"},safe=False)
+        return JsonResponse({"msg":"Please Make sure the data will be filled correctly"},safe=False)
 
 
 
@@ -271,21 +276,11 @@ def addroom(request):
 
         form = RoomCreationForm(request.POST)
         if form.is_valid():
-            first_number = form.cleaned_data.get("initial_number")
-            last_number = form.cleaned_data.get("final_number")
-            
-            room_group = form.cleaned_data.get("room_name")
-            price = form.cleaned_data.get("price")
-            room_list = list(range(first_number,last_number+1))
-            obj = Grouped_room.objects.create(title=room_group)
-            # obj.save(commit=False)
-            obj.save()
-            group_id = Grouped_room.objects.get(id=obj.id)
+            room_number = form.cleaned_data["room_number"] 
+            form.save()
 
-            for data in room_list:
-                obj = Room.objects.create(group= group_id,room_number=data,price_pernight=price,intital_number=first_number,final_number=last_number)
-                obj.save()
-            messages.success(request,"Room are Createted !!!")
+
+            messages.success(request,f'Room are Createted !!! {room_number}')
             return redirect("addroom")
         else:
             messages.error(request,"Room Cant Create !!")
